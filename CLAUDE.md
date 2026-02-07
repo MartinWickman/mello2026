@@ -33,6 +33,11 @@ When processing results, always verify:
   2. If still tied, most number of 8-point votes
   3. Continue down through 6, 5, 4, 3, 2, 1 if needed
 
+## Tallying Script
+- `tally.py` in the project root handles vote parsing, validation, and ranking
+- Usage: `python3 tally.py <path-to-tsv>`
+- Always run this to verify calculations rather than doing mental math
+
 ## Competition Structure
 - **4 heats** (deltävlingar), each with 8 songs
   - 1st and 2nd place → go directly to the Final
