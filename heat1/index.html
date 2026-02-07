@@ -57,6 +57,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
+    padding: 1rem;
     z-index: 10;
     opacity: 0;
     transition: opacity 0.8s ease;
@@ -351,23 +353,6 @@
     box-shadow: 0 0 10px rgba(255, 50, 0, 0.5);
   }
 
-  .click-hint {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #444;
-    font-size: 0.9rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    z-index: 100;
-    animation: fade-pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes fade-pulse {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.8; }
-  }
 
   .spotify-link {
     margin-top: 2.5rem;
@@ -396,7 +381,6 @@
 <div class="fire-bg"></div>
 <div class="flash-overlay" id="flash"></div>
 <div class="progress" id="progress"></div>
-<div class="click-hint">Click or press any key to continue</div>
 
 <!-- Slide 0: Title -->
 <div class="slide active" id="slide-0">
