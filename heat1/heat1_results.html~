@@ -8,15 +8,13 @@
   @import url('https://fonts.googleapis.com/css2?family=Metal+Mania&family=Oswald:wght@400;700&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { overflow-x: hidden; }
 
   body {
     background: #0a0a0a;
     color: #e0e0e0;
     font-family: 'Oswald', sans-serif;
-    overflow-x: hidden;
-    overflow-y: auto;
-    min-height: 100vh;
+    overflow: hidden;
+    height: 100vh;
     width: 100vw;
     cursor: pointer;
     user-select: none;
@@ -54,14 +52,11 @@
 
   .slide {
     position: absolute;
-    top: 0; left: 0; right: 0;
-    min-height: 100vh;
+    top: 0; left: 0; right: 0; bottom: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    padding: 2rem 1rem;
     z-index: 10;
     opacity: 0;
     transition: opacity 0.8s ease;
@@ -143,9 +138,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 100%;
-    overflow-wrap: break-word;
-    word-break: break-word;
   }
 
   @keyframes slam-in {
@@ -359,61 +351,22 @@
     box-shadow: 0 0 10px rgba(255, 50, 0, 0.5);
   }
 
-
-  .spotify-link {
-    margin-top: 2.5rem;
-    display: inline-block;
-    padding: 0.7rem 2rem;
-    background: #1db954;
-    color: #fff;
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.2rem;
-    text-decoration: none;
-    border-radius: 50px;
-    letter-spacing: 0.1em;
+  .click-hint {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #444;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    transition: background 0.3s, box-shadow 0.3s;
-    box-shadow: 0 0 15px rgba(29, 185, 84, 0.3);
+    z-index: 100;
+    animation: fade-pulse 2s ease-in-out infinite;
   }
 
-  .spotify-link:hover {
-    background: #1ed760;
-    box-shadow: 0 0 25px rgba(29, 185, 84, 0.5);
-  }
-
-  .commentary {
-    margin-top: 1.2rem;
-    font-size: 1.05rem;
-    color: #888;
-    font-style: italic;
-    max-width: 550px;
-    line-height: 1.6;
-  }
-
-  @media (max-width: 600px) {
-    .title-main { font-size: 3.5rem; }
-    .title-sub { font-size: 1.2rem; letter-spacing: 0.3em; }
-    .title-heat { font-size: 2rem; }
-    .position-headline .pos-number { font-size: 3.5rem; }
-    .position-headline .pos-label { font-size: 1.1rem; }
-    .position-headline { margin-bottom: 1rem; }
-    .album-cover { width: 150px; height: 150px; margin-bottom: 1rem; }
-    .band-name { font-size: 2.5rem; }
-    .song-name { font-size: 1.3rem; margin-bottom: 1rem; }
-    .points-display { font-size: 3.5rem; }
-    .winner .band-name { font-size: 3rem; }
-    .winner .album-cover { width: 180px; height: 180px; }
-    .winner .position-headline .pos-number { font-size: 4rem; }
-    .voter-info { gap: 1.5rem; }
-    .tiebreaker-text { font-size: 2rem; }
-    .tiebreaker-detail { font-size: 1rem; }
-    .tiebreaker-covers { gap: 1.5rem; }
-    .tiebreaker-covers img { width: 100px; height: 100px; }
-    .vs-text { font-size: 2rem; }
-    .summary-table { font-size: 0.85rem; }
-    .summary-table th, .summary-table td { padding: 0.4rem 0.6rem; }
-    .destination { font-size: 1.1rem; padding: 0.5rem 1.5rem; }
-    .commentary { font-size: 0.9rem; max-width: 90vw; }
+  @keyframes fade-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
   }
 </style>
 </head>
@@ -422,6 +375,7 @@
 <div class="fire-bg"></div>
 <div class="flash-overlay" id="flash"></div>
 <div class="progress" id="progress"></div>
+<div class="click-hint">Click or press any key to continue</div>
 
 <!-- Slide 0: Title -->
 <div class="slide active" id="slide-0">
@@ -441,10 +395,8 @@
     <img class="album-cover" src="images/behemoth.jpg" alt="Behemoth - The Shit Ov God">
     <div class="band-name">Behemoth</div>
     <div class="song-name">"The Shit Ov God"</div>
-    <div class="points-display">38</div>
+    <div class="points-display">36</div>
     <div class="points-label">Total Points</div>
-    <div class="destination dest-eliminated">Eliminated</div>
-    <div class="commentary">Not even Fredda's late vote could save them. Three juries buried Behemoth with 1-point daggers. Peppe stood alone as their only believer.</div>
     <div class="voter-info">
       <div class="voter-group">
         <div class="voter-label">Champion (10p)</div>
@@ -455,52 +407,23 @@
         <div class="voter-names hater">Markus, Anders, Wickman</div>
       </div>
     </div>
+    <div class="destination dest-eliminated">Eliminated</div>
   </div>
 </div>
 
-<!-- Slide 2: 7th place - Vallgrav -->
+<!-- Slide 2: 7th place - Sabaton -->
 <div class="slide" id="slide-2">
-  <div class="slide-bg-img" style="background-image: url('images/vallgrav.jpg');"></div>
+  <div class="slide-bg-img" style="background-image: url('images/sabaton.jpg');"></div>
   <div class="result-card">
     <div class="position-headline">
       <span class="pos-label">Seventh Place</span>
       <span class="pos-number">#7</span>
     </div>
-    <img class="album-cover" src="images/vallgrav.jpg" alt="Vallgrav">
-    <div class="band-name">Vallgrav</div>
-    <div class="song-name">"Häxhammaren"</div>
-    <div class="points-display">39</div>
-    <div class="points-label">Total Points</div>
-    <div class="destination dest-eliminated">Eliminated</div>
-    <div class="commentary">Fredda's 1-point was the final nail in the coffin. Dropping from tied 5th to a lonely 7th. Thanks for nothing, Fredda.</div>
-    <div class="voter-info">
-      <div class="voter-group">
-        <div class="voter-label">Champion (10p)</div>
-        <div class="voter-names champion">Tompa</div>
-      </div>
-      <div class="voter-group">
-        <div class="voter-label">Bottom (1p)</div>
-        <div class="voter-names hater">Fredda</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 3: 6th place - Sabaton -->
-<div class="slide" id="slide-3">
-  <div class="slide-bg-img" style="background-image: url('images/sabaton.jpg');"></div>
-  <div class="result-card">
-    <div class="position-headline">
-      <span class="pos-label">Sixth Place</span>
-      <span class="pos-number">#6</span>
-    </div>
     <img class="album-cover" src="images/sabaton.jpg" alt="Sabaton - Legends">
     <div class="band-name">Sabaton</div>
     <div class="song-name">"Crossing the Rubicon"</div>
-    <div class="points-display">41</div>
+    <div class="points-display">37</div>
     <div class="points-label">Total Points</div>
-    <div class="destination dest-eliminated">Eliminated</div>
-    <div class="commentary">Up from 7th to 6th &mdash; a slight improvement, but still not enough to cross any rubicons. Markus fought alone for the cause.</div>
     <div class="voter-info">
       <div class="voter-group">
         <div class="voter-label">Champion (10p)</div>
@@ -511,135 +434,23 @@
         <div class="voter-names hater">Fezz</div>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- Slide 4: 5th place - H.E.A.T -->
-<div class="slide" id="slide-4">
-  <div class="slide-bg-img" style="background-image: url('images/heat.jpg');"></div>
-  <div class="result-card">
-    <div class="position-headline">
-      <span class="pos-label">Fifth Place</span>
-      <span class="pos-number">#5</span>
-    </div>
-    <img class="album-cover" src="images/heat.jpg" alt="H.E.A.T - Welcome to the Future">
-    <div class="band-name">H.E.A.T</div>
-    <div class="song-name">"Running to You"</div>
-    <div class="points-display">43</div>
-    <div class="points-label">Total Points</div>
     <div class="destination dest-eliminated">Eliminated</div>
-    <div class="commentary">The biggest casualty of Fredda's fashionably late arrival. From Andra Chansen to eliminated. If only Fredda had voted on time &mdash; or at all generously &mdash; H.E.A.T would still be alive.</div>
-    <div class="voter-info">
-      <div class="voter-group">
-        <div class="voter-label">Champion (10p)</div>
-        <div class="voter-names champion">Anders</div>
-      </div>
-      <div class="voter-group">
-        <div class="voter-label">Bottom (1p)</div>
-        <div class="voter-names hater">Ola</div>
-      </div>
-    </div>
   </div>
 </div>
 
-<!-- Slide 5: Tie announcement -->
-<div class="slide" id="slide-5">
-  <div class="result-card">
-    <div class="tiebreaker-text">Tied at 45!</div>
-    <div class="tiebreaker-detail">
-      Two songs scored <strong style="color:#ffcc00">45 points</strong> each.
-    </div>
-    <div class="tiebreaker-covers">
-      <div style="text-align:center;">
-        <img src="images/thehaunted.jpg" alt="The Haunted">
-        <div style="margin-top:0.5rem; color:#ff4400; font-family:'Metal Mania',cursive; font-size:1.3rem;">The Haunted</div>
-      </div>
-      <div class="vs-text">VS</div>
-      <div style="text-align:center;">
-        <img src="images/megadeth.jpg" alt="Megadeth">
-        <div style="margin-top:0.5rem; color:#ff4400; font-family:'Metal Mania',cursive; font-size:1.3rem;">Megadeth</div>
-      </div>
-    </div>
-    <div class="tiebreaker-detail">
-      Both head to Andra Chansen, but who takes 3rd?<br>
-      Broken by number of 10-point votes...<br><br>
-      <span style="color:#ffcc00; font-size:1.5rem;">The Haunted: 2 &times; 10p</span> &mdash;
-      <span style="color:#cc8800; font-size:1.5rem;">Megadeth: 1 &times; 10p</span>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 6: 4th place - Megadeth -->
-<div class="slide" id="slide-6">
-  <div class="slide-bg-img" style="background-image: url('images/megadeth.jpg');"></div>
-  <div class="result-card">
-    <div class="position-headline">
-      <span class="pos-label">Fourth Place</span>
-      <span class="pos-number">#4</span>
-    </div>
-    <img class="album-cover" src="images/megadeth.jpg" alt="Megadeth">
-    <div class="band-name">Megadeth</div>
-    <div class="song-name">"I Am War"</div>
-    <div class="points-display">45</div>
-    <div class="points-label">Total Points</div>
-    <div class="destination dest-secondchance">Andra Chansen</div>
-    <div class="commentary">Wickman declared war for Megadeth. Kalle declared it worthless. Fredda's 6 gave them a boost, but not enough to overtake The Haunted on the tiebreaker.</div>
-    <div class="voter-info">
-      <div class="voter-group">
-        <div class="voter-label">Champion (10p)</div>
-        <div class="voter-names champion">Wickman</div>
-      </div>
-      <div class="voter-group">
-        <div class="voter-label">Bottom (1p)</div>
-        <div class="voter-names hater">Kalle</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 7: 3rd place - The Haunted -->
-<div class="slide" id="slide-7">
-  <div class="slide-bg-img" style="background-image: url('images/thehaunted.jpg');"></div>
-  <div class="result-card">
-    <div class="position-headline">
-      <span class="pos-label">Third Place</span>
-      <span class="pos-number">#3</span>
-    </div>
-    <img class="album-cover" src="images/thehaunted.jpg" alt="The Haunted - Songs of Last Resort">
-    <div class="band-name">The Haunted</div>
-    <div class="song-name">"In Fire Reborn"</div>
-    <div class="points-display">45</div>
-    <div class="points-label">Total Points</div>
-    <div class="destination dest-secondchance">Andra Chansen</div>
-    <div class="commentary">Dropped from direct to Final down to Andra Chansen. Fredda's lukewarm 5 wasn't enough to hold their position. Still &mdash; zero 1-point haters. Nobody despises The Haunted, they just don't love them enough.</div>
-    <div class="voter-info">
-      <div class="voter-group">
-        <div class="voter-label">Champions (10p)</div>
-        <div class="voter-names champion">Fezz, Ola</div>
-      </div>
-      <div class="voter-group">
-        <div class="voter-label">Bottom (1p)</div>
-        <div class="voter-names" style="color:#555;">None</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 8: 2nd place - Arch Enemy -->
-<div class="slide" id="slide-8">
+<!-- Slide 3: Tied 5th - Arch Enemy -->
+<div class="slide" id="slide-3">
   <div class="slide-bg-img" style="background-image: url('images/archenemy.jpg');"></div>
   <div class="result-card">
     <div class="position-headline">
-      <span class="pos-label">Second Place</span>
-      <span class="pos-number">#2</span>
+      <span class="pos-label">Tied Fifth Place</span>
+      <span class="pos-number">#5</span>
     </div>
     <img class="album-cover" src="images/archenemy.jpg" alt="Arch Enemy - Blood Dynasty">
     <div class="band-name">Arch Enemy</div>
     <div class="song-name">"Break the Spell"</div>
-    <div class="points-display">46</div>
+    <div class="points-display">38</div>
     <div class="points-label">Total Points</div>
-    <div class="destination dest-final">Direct to Final</div>
-    <div class="commentary">The comeback of the century. From eliminated to DIRECT TO THE FINAL. Still the only song without a single 10-point champion &mdash; but three 8s from Anders, Peppe, and Fredda were enough. Who needs love when you have consistency?</div>
     <div class="voter-info">
       <div class="voter-group">
         <div class="voter-label">Champion (10p)</div>
@@ -650,6 +461,141 @@
         <div class="voter-names hater">Tompa</div>
       </div>
     </div>
+    <div class="destination dest-eliminated">Eliminated</div>
+  </div>
+</div>
+
+<!-- Slide 4: Tied 5th - Vallgrav -->
+<div class="slide" id="slide-4">
+  <div class="slide-bg-img" style="background-image: url('images/vallgrav.jpg');"></div>
+  <div class="result-card">
+    <div class="position-headline">
+      <span class="pos-label">Tied Fifth Place</span>
+      <span class="pos-number">#5</span>
+    </div>
+    <img class="album-cover" src="images/vallgrav.jpg" alt="Vallgrav">
+    <div class="band-name">Vallgrav</div>
+    <div class="song-name">"Häxhammaren"</div>
+    <div class="points-display">38</div>
+    <div class="points-label">Total Points</div>
+    <div class="voter-info">
+      <div class="voter-group">
+        <div class="voter-label">Champion (10p)</div>
+        <div class="voter-names champion">Tompa</div>
+      </div>
+      <div class="voter-group">
+        <div class="voter-label">Bottom (1p)</div>
+        <div class="voter-names" style="color:#555;">None</div>
+      </div>
+    </div>
+    <div class="destination dest-eliminated">Eliminated</div>
+  </div>
+</div>
+
+<!-- Slide 5: 4th place - Megadeth -->
+<div class="slide" id="slide-5">
+  <div class="slide-bg-img" style="background-image: url('images/megadeth.jpg');"></div>
+  <div class="result-card">
+    <div class="position-headline">
+      <span class="pos-label">Fourth Place</span>
+      <span class="pos-number">#4</span>
+    </div>
+    <img class="album-cover" src="images/megadeth.jpg" alt="Megadeth">
+    <div class="band-name">Megadeth</div>
+    <div class="song-name">"I Am War"</div>
+    <div class="points-display">39</div>
+    <div class="points-label">Total Points</div>
+    <div class="voter-info">
+      <div class="voter-group">
+        <div class="voter-label">Champion (10p)</div>
+        <div class="voter-names champion">Wickman</div>
+      </div>
+      <div class="voter-group">
+        <div class="voter-label">Bottom (1p)</div>
+        <div class="voter-names hater">Kalle</div>
+      </div>
+    </div>
+    <div class="destination dest-secondchance">Second Chance</div>
+  </div>
+</div>
+
+<!-- Slide 6: Tiebreaker announcement -->
+<div class="slide" id="slide-6">
+  <div class="result-card">
+    <div class="tiebreaker-text">Tiebreaker!</div>
+    <div class="tiebreaker-detail">
+      Two songs scored <strong style="color:#ffcc00">40 points</strong> each.
+    </div>
+    <div class="tiebreaker-covers">
+      <div style="text-align:center;">
+        <img src="images/thehaunted.jpg" alt="The Haunted">
+        <div style="margin-top:0.5rem; color:#ff4400; font-family:'Metal Mania',cursive; font-size:1.3rem;">The Haunted</div>
+      </div>
+      <div class="vs-text">VS</div>
+      <div style="text-align:center;">
+        <img src="images/heat.jpg" alt="H.E.A.T">
+        <div style="margin-top:0.5rem; color:#ff4400; font-family:'Metal Mania',cursive; font-size:1.3rem;">H.E.A.T</div>
+      </div>
+    </div>
+    <div class="tiebreaker-detail">
+      The tie is broken by number of 10-point votes...<br><br>
+      <span style="color:#ffcc00; font-size:1.5rem;">The Haunted: 2 &times; 10p</span> &mdash;
+      <span style="color:#cc8800; font-size:1.5rem;">H.E.A.T: 1 &times; 10p</span>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 7: 3rd place - H.E.A.T -->
+<div class="slide" id="slide-7">
+  <div class="slide-bg-img" style="background-image: url('images/heat.jpg');"></div>
+  <div class="result-card">
+    <div class="position-headline">
+      <span class="pos-label">Third Place</span>
+      <span class="pos-number">#3</span>
+    </div>
+    <img class="album-cover" src="images/heat.jpg" alt="H.E.A.T - Welcome to the Future">
+    <div class="band-name">H.E.A.T</div>
+    <div class="song-name">"Running to You"</div>
+    <div class="points-display">40</div>
+    <div class="points-label">Total Points</div>
+    <div class="voter-info">
+      <div class="voter-group">
+        <div class="voter-label">Champion (10p)</div>
+        <div class="voter-names champion">Anders</div>
+      </div>
+      <div class="voter-group">
+        <div class="voter-label">Bottom (1p)</div>
+        <div class="voter-names hater">Ola</div>
+      </div>
+    </div>
+    <div class="destination dest-secondchance">Second Chance</div>
+  </div>
+</div>
+
+<!-- Slide 8: 2nd place - The Haunted -->
+<div class="slide" id="slide-8">
+  <div class="slide-bg-img" style="background-image: url('images/thehaunted.jpg');"></div>
+  <div class="result-card">
+    <div class="position-headline">
+      <span class="pos-label">Second Place</span>
+      <span class="pos-number">#2</span>
+    </div>
+    <img class="album-cover" src="images/thehaunted.jpg" alt="The Haunted - Songs of Last Resort">
+    <div class="band-name">The Haunted</div>
+    <div class="song-name">"In Fire Reborn"</div>
+    <div class="points-display">40</div>
+    <div class="points-label">Total Points</div>
+    <div class="voter-info">
+      <div class="voter-group">
+        <div class="voter-label">Champions (10p)</div>
+        <div class="voter-names champion">Fezz, Ola</div>
+      </div>
+      <div class="voter-group">
+        <div class="voter-label">Bottom (1p)</div>
+        <div class="voter-names" style="color:#555;">None</div>
+      </div>
+    </div>
+    <div class="destination dest-final">Direct to Final</div>
   </div>
 </div>
 
@@ -663,21 +609,20 @@
     </div>
     <img class="album-cover" src="images/ghost.jpg" alt="Ghost - Skeleta">
     <div class="band-name">Ghost</div>
-    <div class="song-name">"Satanized"</div>
-    <div class="points-display" style="font-size:6rem;">54</div>
+    <div class="song-name">"Stanized"</div>
+    <div class="points-display" style="font-size:6rem;">44</div>
     <div class="points-label">Total Points</div>
-    <div class="destination dest-final">Heat 1 Winner &bull; Direct to Final</div>
-    <div class="commentary">Fredda's 10 turned a comfortable win into a landslide. 54 points &mdash; eight clear of second place. Untouchable. At least Fredda got something right.</div>
     <div class="voter-info">
       <div class="voter-group">
-        <div class="voter-label">Champions (10p)</div>
-        <div class="voter-names champion">Kalle, Fredda</div>
+        <div class="voter-label">Champion (10p)</div>
+        <div class="voter-names champion">Kalle</div>
       </div>
       <div class="voter-group">
         <div class="voter-label">Bottom (1p)</div>
         <div class="voter-names hater">Peppe</div>
       </div>
     </div>
+    <div class="destination dest-final">Heat 1 Winner &bull; Direct to Final</div>
   </div>
 </div>
 
@@ -687,17 +632,15 @@
     <div class="tiebreaker-text" style="margin-bottom:2rem;">Heat 1 &mdash; Final Standings</div>
     <table class="summary-table">
       <tr><th>#</th><th>Song</th><th>Pts</th><th>Destination</th></tr>
-      <tr class="final-row"><td>1</td><td>Satanized / Ghost</td><td>54</td><td>FINAL</td></tr>
-      <tr class="final-row"><td>2</td><td>Break the Spell / Arch Enemy</td><td>46</td><td>FINAL</td></tr>
-      <tr class="sc-row"><td>3</td><td>In Fire Reborn / The Haunted</td><td>45</td><td>ANDRA CHANSEN</td></tr>
-      <tr class="sc-row"><td>4</td><td>I Am War / Megadeth</td><td>45</td><td>ANDRA CHANSEN</td></tr>
-      <tr class="elim-row"><td>5</td><td>Running to You / H.E.A.T</td><td>43</td><td>Eliminated</td></tr>
-      <tr class="elim-row"><td>6</td><td>Crossing the Rubicon / Sabaton</td><td>41</td><td>Eliminated</td></tr>
-      <tr class="elim-row"><td>7</td><td>Häxhammaren / Vallgrav</td><td>39</td><td>Eliminated</td></tr>
-      <tr class="elim-row"><td>8</td><td>The Shit Ov God / Behemoth</td><td>38</td><td>Eliminated</td></tr>
+      <tr class="final-row"><td>1</td><td>Stanized / Ghost</td><td>44</td><td>FINAL</td></tr>
+      <tr class="final-row"><td>2</td><td>In Fire Reborn / The Haunted</td><td>40</td><td>FINAL</td></tr>
+      <tr class="sc-row"><td>3</td><td>Running to You / H.E.A.T</td><td>40</td><td>SECOND CHANCE</td></tr>
+      <tr class="sc-row"><td>4</td><td>I Am War / Megadeth</td><td>39</td><td>SECOND CHANCE</td></tr>
+      <tr class="elim-row"><td>5</td><td>Häxhammaren / Vallgrav</td><td>38</td><td>Eliminated</td></tr>
+      <tr class="elim-row"><td>5</td><td>Break the Spell / Arch Enemy</td><td>38</td><td>Eliminated</td></tr>
+      <tr class="elim-row"><td>7</td><td>Crossing the Rubicon / Sabaton</td><td>37</td><td>Eliminated</td></tr>
+      <tr class="elim-row"><td>8</td><td>The Shit Ov God / Behemoth</td><td>36</td><td>Eliminated</td></tr>
     </table>
-    <div class="commentary" style="margin-top:1.5rem;">Fredda's late vote flipped three destinies: Arch Enemy from eliminated to the Final, The Haunted from the Final to Andra Chansen, and H.E.A.T from Andra Chansen to eliminated. Next time, vote on time.</div>
-    <a href="https://open.spotify.com/playlist/0WUQYEehltvpJt0DcWAbsw?si=bF-jDi2wSdmX_tSDa-XwkQ" target="_blank" class="spotify-link">&#127925; Listen on Spotify</a>
   </div>
 </div>
 
@@ -761,8 +704,7 @@
       const prev = document.getElementById('slide-' + currentSlide);
       prev.classList.add('active');
       updateProgress();
-    } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'Enter') {
-      e.preventDefault();
+    } else {
       nextSlide();
     }
   });
