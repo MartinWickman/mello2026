@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MELLO 2026 - Heat 1 Results</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Metal+Mania&family=Oswald:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0a;
+    color: #e0e0e0;
+    font-family: 'Oswald', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .fire-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 50% 100%, rgba(180, 30, 0, 0.3) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 90%, rgba(255, 80, 0, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(255, 80, 0, 0.15) 0%, transparent 50%),
+      linear-gradient(to bottom, #0a0a0a 0%, #1a0505 100%);
+    z-index: 0;
+  }
+
+  .ember {
+    position: fixed;
+    width: 3px;
+    height: 3px;
+    background: #ff6600;
+    border-radius: 50%;
+    opacity: 0;
+    z-index: 1;
+    animation: float-up linear infinite;
+    box-shadow: 0 0 6px 2px rgba(255, 100, 0, 0.6);
+  }
+
+  @keyframes float-up {
+    0% { opacity: 0; transform: translateY(0) scale(1); }
+    10% { opacity: 1; }
+    90% { opacity: 0.5; }
+    100% { opacity: 0; transform: translateY(-100vh) scale(0); }
+  }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    pointer-events: none;
+  }
+
+  .slide.active { opacity: 1; pointer-events: auto; }
+
+  /* Background image for result slides */
+  .slide-bg-img {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.15;
+    filter: blur(8px) saturate(0.6);
+    z-index: -1;
+    transform: scale(1.1);
+  }
+
+  /* Title slide */
+  .title-main {
+    font-family: 'Metal Mania', cursive;
+    font-size: 6rem;
+    color: #ff3300;
+    text-shadow: 0 0 20px rgba(255, 50, 0, 0.8), 0 0 40px rgba(255, 50, 0, 0.4), 0 0 80px rgba(255, 50, 0, 0.2), 3px 3px 0 #000;
+    letter-spacing: 0.1em;
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+
+  .title-sub {
+    font-family: 'Oswald', sans-serif;
+    font-size: 2rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    margin-top: 1rem;
+  }
+
+  .title-heat {
+    font-family: 'Metal Mania', cursive;
+    font-size: 3rem;
+    color: #cc6600;
+    text-shadow: 0 0 15px rgba(200, 100, 0, 0.5);
+    margin-top: 2rem;
+  }
+
+  @keyframes pulse-glow {
+    from { text-shadow: 0 0 20px rgba(255, 50, 0, 0.8), 0 0 40px rgba(255, 50, 0, 0.4), 3px 3px 0 #000; }
+    to { text-shadow: 0 0 30px rgba(255, 50, 0, 1), 0 0 60px rgba(255, 50, 0, 0.6), 0 0 100px rgba(255, 50, 0, 0.3), 3px 3px 0 #000; }
+  }
+
+  /* Position headline - big and clear */
+  .position-headline {
+    font-family: 'Metal Mania', cursive;
+    font-size: 3rem;
+    color: #ff3300;
+    text-shadow: 0 0 15px rgba(255, 50, 0, 0.5), 2px 2px 0 #000;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .position-headline .pos-number {
+    font-size: 5rem;
+    display: block;
+    line-height: 1;
+  }
+
+  .position-headline .pos-label {
+    font-size: 1.5rem;
+    color: #888;
+    letter-spacing: 0.3em;
+  }
+
+  .result-card {
+    text-align: center;
+    animation: slam-in 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  @keyframes slam-in {
+    0% { transform: scale(3) rotate(-5deg); opacity: 0; }
+    60% { transform: scale(0.95) rotate(1deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  /* Album cover */
+  .album-cover {
+    width: 220px;
+    height: 220px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), 0 0 60px rgba(255, 50, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .band-name {
+    font-family: 'Metal Mania', cursive;
+    font-size: 4rem;
+    color: #ff4400;
+    text-shadow: 0 0 20px rgba(255, 60, 0, 0.6), 2px 2px 0 #000;
+    margin-bottom: 0.3rem;
+  }
+
+  .song-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.8rem;
+    color: #aaa;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+
+  .points-display {
+    font-family: 'Metal Mania', cursive;
+    font-size: 5rem;
+    color: #ffcc00;
+    text-shadow: 0 0 30px rgba(255, 200, 0, 0.6), 0 0 60px rgba(255, 200, 0, 0.3);
+    line-height: 1;
+  }
+
+  .points-label {
+    font-size: 1rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    margin-bottom: 1rem;
+  }
+
+  .voter-info {
+    margin-top: 1rem;
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+  }
+
+  .voter-group { text-align: center; }
+
+  .voter-label {
+    font-size: 0.85rem;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 0.3rem;
+  }
+
+  .voter-names { font-size: 1.2rem; color: #ccc; }
+  .voter-names.champion { color: #ffcc00; }
+  .voter-names.hater { color: #ff3333; }
+
+  .destination {
+    margin-top: 1.5rem;
+    padding: 0.6rem 2rem;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    border: 2px solid;
+    display: inline-block;
+  }
+
+  .dest-eliminated {
+    color: #666;
+    border-color: #333;
+    background: rgba(50, 50, 50, 0.3);
+  }
+
+  .dest-secondchance {
+    color: #cc8800;
+    border-color: #cc8800;
+    background: rgba(200, 130, 0, 0.1);
+    box-shadow: 0 0 20px rgba(200, 130, 0, 0.2);
+  }
+
+  .dest-final {
+    color: #ffcc00;
+    border-color: #ffcc00;
+    background: rgba(255, 200, 0, 0.1);
+    box-shadow: 0 0 30px rgba(255, 200, 0, 0.3);
+    animation: final-glow 1.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes final-glow {
+    from { box-shadow: 0 0 20px rgba(255, 200, 0, 0.2); }
+    to { box-shadow: 0 0 50px rgba(255, 200, 0, 0.5), 0 0 80px rgba(255, 200, 0, 0.2); }
+  }
+
+  /* Winner special */
+  .winner .position-headline { color: #ffcc00; text-shadow: 0 0 20px rgba(255, 200, 0, 0.6), 2px 2px 0 #000; }
+  .winner .position-headline .pos-number { font-size: 6rem; }
+  .winner .band-name {
+    font-size: 5rem;
+    color: #ffcc00;
+    text-shadow: 0 0 30px rgba(255, 200, 0, 0.8), 0 0 60px rgba(255, 200, 0, 0.4), 3px 3px 0 #000;
+  }
+  .winner .album-cover {
+    width: 260px;
+    height: 260px;
+    box-shadow: 0 0 40px rgba(255, 200, 0, 0.4), 0 0 80px rgba(255, 200, 0, 0.2);
+    border-color: rgba(255, 200, 0, 0.3);
+  }
+
+  /* Tiebreaker */
+  .tiebreaker-text {
+    font-family: 'Metal Mania', cursive;
+    font-size: 3rem;
+    color: #ff6600;
+    text-shadow: 0 0 15px rgba(255, 100, 0, 0.5);
+    margin-bottom: 1rem;
+  }
+
+  .tiebreaker-detail {
+    font-size: 1.3rem;
+    color: #999;
+    max-width: 600px;
+    line-height: 1.8;
+    text-align: center;
+  }
+
+  .tiebreaker-covers {
+    display: flex;
+    gap: 3rem;
+    margin: 2rem 0;
+    align-items: center;
+  }
+
+  .tiebreaker-covers img {
+    width: 160px;
+    height: 160px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  }
+
+  .vs-text {
+    font-family: 'Metal Mania', cursive;
+    font-size: 3rem;
+    color: #ff3300;
+    text-shadow: 0 0 15px rgba(255, 50, 0, 0.5);
+  }
+
+  /* Summary */
+  .summary-table {
+    border-collapse: collapse;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.1rem;
+  }
+
+  .summary-table th {
+    color: #ff4400;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.6rem 1.2rem;
+    border-bottom: 2px solid #333;
+    font-weight: 700;
+  }
+
+  .summary-table td {
+    padding: 0.5rem 1.2rem;
+    border-bottom: 1px solid #1a1a1a;
+    text-align: center;
+  }
+
+  .summary-table td:nth-child(2) { text-align: left; }
+  .summary-table tr.final-row td { color: #ffcc00; }
+  .summary-table tr.sc-row td { color: #cc8800; }
+  .summary-table tr.elim-row td { color: #555; }
+
+  .flash-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: white;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s;
+  }
+
+  .flash-overlay.flash { opacity: 0.3; transition: opacity 0s; }
+
+  .progress {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff3300, #ffcc00);
+    z-index: 100;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px rgba(255, 50, 0, 0.5);
+  }
+
+  .click-hint {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #444;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    z-index: 100;
+    animation: fade-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes fade-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+  }
+
+  .spotify-link {
+    margin-top: 2.5rem;
+    display: inline-block;
+    padding: 0.7rem 2rem;
+    background: #1db954;
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.2rem;
+    text-decoration: none;
+    border-radius: 50px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: background 0.3s, box-shadow 0.3s;
+    box-shadow: 0 0 15px rgba(29, 185, 84, 0.3);
+  }
+
+  .spotify-link:hover {
+    background: #1ed760;
+    box-shadow: 0 0 25px rgba(29, 185, 84, 0.5);
+  }
+</style>
+</head>
+<body>
+
+<div class="fire-bg"></div>
+<div class="flash-overlay" id="flash"></div>
+<div class="progress" id="progress"></div>
+<div class="click-hint">Click or press any key to continue</div>
+
+<!-- Slide 0: Title -->
+<div class="slide active" id="slide-0">
+  <div class="title-main">MELLO 2026</div>
+  <div class="title-sub">The Reckoning</div>
+  <div class="title-heat">Heat 1 Results</div>
+  <a href="https://open.spotify.com/playlist/0WUQYEehltvpJt0DcWAbsw?si=bF-jDi2wSdmX_tSDa-XwkQ" target="_blank" class="spotify-link">&#127925; Listen on Spotify</a>
+</div>
+
+<!-- Slide 1: 8th place - Behemoth -->
+<div class="slide" id="slide-1">
+  <div class="slide-bg-img" style="background-image: url('images/behemoth.jpg');"></div>
+  <div class="result-card">
+    <div class="position-headline">
+      <span class="pos-label">Eighth Place</span>
+      <span class="pos-number">#8</span>
+    </div>
+    <img class="album-cover" src="images/behemoth.jpg" alt="Behemoth - The Shit Ov God">
+    <div class="band-name">Behemoth</div>
+    <div class="song-name">"The Shit Ov God"</div>
+    <div class="points-display">36</div>
+    <div class="points-label">Total Points</div>
+    <div class="voter-info">
+      <div class="voter-group">
+        <div class="voter-label">Champion (10p)</div>
+        <div class="voter-names champion">Peppe</div>
+      </div>
+      <div class="voter-group">
+        <div class="voter-label">Bottom (1p)</div>
+        <div class="voter-names hater">Markus, Anders, Wickman</div>
+      </div>
+    </div>
+    <div class="destination dest-eliminated">Eliminated</div>
+  </div>
+</div>
+
+<!-- Slide 2: 7th place - Sabaton -->
+<div class="slide" id="slide-2">
+  <div class="slide-bg-img" style="background-image: url('images/sabaton.jpg');"></div>
+  <div class="result-card">
+    <div class="position-headline">
+      <span class="pos-label">Seventh Place</span>
+      <span class="pos-number">#7</span>
+    </div>
+    <img class="album-cover" src="images/sabaton.jpg" alt="Sabaton - Legends">
+    <div class="band-name">Sabaton</div>
+    <div class="song-name">"Crossing the Rubicon"</div>
+    <div class="points-display">37</div>
+    <div class="points-label">Total Points</div>
+    <div class="voter-info">
+      <div class="voter-group">
+        <div class="voter-label">Champion (10p)</div>
+        <div class="voter-names champion">Markus</div>
+      </div>
+      <div class="voter-group">
+        <div class="voter-label">Bottom (1p)</div>
+        <div class="voter-names hater">Fezz</div>
+      </div>
+    </div>
+    <div class="destination dest-eliminated">Eliminated</div>
+  </div>
+</div>
+
+<!-- Slide 3: Tied 5th - Arch Enemy -->
+<div class="slide" id="slide-3">
+  <div class="slide-bg-img" style="background-image: url('images/archenemy.jpg');"></div>
+  <div class="result-card">
+    <div class="position-headline">
+      <span class="pos-label">Tied Fifth Place</span>
+      <span class="pos-number">#5</span>
+    </div>
+    <img class="album-cover" src="images/archenemy.jpg" alt="Arch Enemy - Blood Dynasty">
+    <div class="band-name">Arch Enemy</div>
+    <div class="song-name">"Break the Spell"</div>
+    <div class="points-display">38</div>
+    <div class="points-label">Total Points</div>
+    <div class="voter-info">
+      <div class="voter-group">
+        <div class="voter-label">Champion (10p)</div>
+        <div class="voter-names" style="color:#555;">None</div>
+      </div>
+      <div class="voter-group">
+        <div class="voter-label">Bottom (1p)</div>
+        <div class="voter-names hater">Tompa</div>
+      </div>
+    </div>
+    <div class="destination dest-eliminated">Eliminated</div>
+  </div>
+</div>
+
+<!-- Slide 4: Tied 5th - Vallgrav -->
+<div class="slide" id="slide-4">
+  <div class="slide-bg-img" style="background-image: url('images/vallgrav.jpg');"></div>
+  <div class="result-card">
+    <div class="position-headline">
+      <span class="pos-label">Tied Fifth Place</span>
+      <span class="pos-number">#5</span>
+    </div>
+    <img class="album-cover" src="images/vallgrav.jpg" alt="Vallgrav">
+    <div class="band-name">Vallgrav</div>
+    <div class="song-name">"Häxhammaren"</div>
+    <div class="points-display">38</div>
+    <div class="points-label">Total Points</div>
+    <div class="voter-info">
+      <div class="voter-group">
+        <div class="voter-label">Champion (10p)</div>
+        <div class="voter-names champion">Tompa</div>
+      </div>
+      <div class="voter-group">
+        <div class="voter-label">Bottom (1p)</div>
+        <div class="voter-names" style="color:#555;">None</div>
+      </div>
+    </div>
+    <div class="destination dest-eliminated">Eliminated</div>
+  </div>
+</div>
+
+<!-- Slide 5: 4th place - Megadeth -->
+<div class="slide" id="slide-5">
+  <div class="slide-bg-img" style="background-image: url('images/megadeth.jpg');"></div>
+  <div class="result-card">
+    <div class="position-headline">
+      <span class="pos-label">Fourth Place</span>
+      <span class="pos-number">#4</span>
+    </div>
+    <img class="album-cover" src="images/megadeth.jpg" alt="Megadeth">
+    <div class="band-name">Megadeth</div>
+    <div class="song-name">"I Am War"</div>
+    <div class="points-display">39</div>
+    <div class="points-label">Total Points</div>
+    <div class="voter-info">
+      <div class="voter-group">
+        <div class="voter-label">Champion (10p)</div>
+        <div class="voter-names champion">Wickman</div>
+      </div>
+      <div class="voter-group">
+        <div class="voter-label">Bottom (1p)</div>
+        <div class="voter-names hater">Kalle</div>
+      </div>
+    </div>
+    <div class="destination dest-secondchance">Second Chance</div>
+  </div>
+</div>
+
+<!-- Slide 6: Tiebreaker announcement -->
+<div class="slide" id="slide-6">
+  <div class="result-card">
+    <div class="tiebreaker-text">Tiebreaker!</div>
+    <div class="tiebreaker-detail">
+      Two songs scored <strong style="color:#ffcc00">40 points</strong> each.
+    </div>
+    <div class="tiebreaker-covers">
+      <div style="text-align:center;">
+        <img src="images/thehaunted.jpg" alt="The Haunted">
+        <div style="margin-top:0.5rem; color:#ff4400; font-family:'Metal Mania',cursive; font-size:1.3rem;">The Haunted</div>
+      </div>
+      <div class="vs-text">VS</div>
+      <div style="text-align:center;">
+        <img src="images/heat.jpg" alt="H.E.A.T">
+        <div style="margin-top:0.5rem; color:#ff4400; font-family:'Metal Mania',cursive; font-size:1.3rem;">H.E.A.T</div>
+      </div>
+    </div>
+    <div class="tiebreaker-detail">
+      The tie is broken by number of 10-point votes...<br><br>
+      <span style="color:#ffcc00; font-size:1.5rem;">The Haunted: 2 &times; 10p</span> &mdash;
+      <span style="color:#cc8800; font-size:1.5rem;">H.E.A.T: 1 &times; 10p</span>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 7: 3rd place - H.E.A.T -->
+<div class="slide" id="slide-7">
+  <div class="slide-bg-img" style="background-image: url('images/heat.jpg');"></div>
+  <div class="result-card">
+    <div class="position-headline">
+      <span class="pos-label">Third Place</span>
+      <span class="pos-number">#3</span>
+    </div>
+    <img class="album-cover" src="images/heat.jpg" alt="H.E.A.T - Welcome to the Future">
+    <div class="band-name">H.E.A.T</div>
+    <div class="song-name">"Running to You"</div>
+    <div class="points-display">40</div>
+    <div class="points-label">Total Points</div>
+    <div class="voter-info">
+      <div class="voter-group">
+        <div class="voter-label">Champion (10p)</div>
+        <div class="voter-names champion">Anders</div>
+      </div>
+      <div class="voter-group">
+        <div class="voter-label">Bottom (1p)</div>
+        <div class="voter-names hater">Ola</div>
+      </div>
+    </div>
+    <div class="destination dest-secondchance">Second Chance</div>
+  </div>
+</div>
+
+<!-- Slide 8: 2nd place - The Haunted -->
+<div class="slide" id="slide-8">
+  <div class="slide-bg-img" style="background-image: url('images/thehaunted.jpg');"></div>
+  <div class="result-card">
+    <div class="position-headline">
+      <span class="pos-label">Second Place</span>
+      <span class="pos-number">#2</span>
+    </div>
+    <img class="album-cover" src="images/thehaunted.jpg" alt="The Haunted - Songs of Last Resort">
+    <div class="band-name">The Haunted</div>
+    <div class="song-name">"In Fire Reborn"</div>
+    <div class="points-display">40</div>
+    <div class="points-label">Total Points</div>
+    <div class="voter-info">
+      <div class="voter-group">
+        <div class="voter-label">Champions (10p)</div>
+        <div class="voter-names champion">Fezz, Ola</div>
+      </div>
+      <div class="voter-group">
+        <div class="voter-label">Bottom (1p)</div>
+        <div class="voter-names" style="color:#555;">None</div>
+      </div>
+    </div>
+    <div class="destination dest-final">Direct to Final</div>
+  </div>
+</div>
+
+<!-- Slide 9: Winner - Ghost -->
+<div class="slide" id="slide-9">
+  <div class="slide-bg-img" style="background-image: url('images/ghost.jpg'); opacity: 0.2;"></div>
+  <div class="result-card winner">
+    <div class="position-headline">
+      <span class="pos-label">Heat 1 Winner</span>
+      <span class="pos-number">#1</span>
+    </div>
+    <img class="album-cover" src="images/ghost.jpg" alt="Ghost - Skeleta">
+    <div class="band-name">Ghost</div>
+    <div class="song-name">"Satanized"</div>
+    <div class="points-display" style="font-size:6rem;">44</div>
+    <div class="points-label">Total Points</div>
+    <div class="voter-info">
+      <div class="voter-group">
+        <div class="voter-label">Champion (10p)</div>
+        <div class="voter-names champion">Kalle</div>
+      </div>
+      <div class="voter-group">
+        <div class="voter-label">Bottom (1p)</div>
+        <div class="voter-names hater">Peppe</div>
+      </div>
+    </div>
+    <div class="destination dest-final">Heat 1 Winner &bull; Direct to Final</div>
+  </div>
+</div>
+
+<!-- Slide 10: Summary -->
+<div class="slide" id="slide-10">
+  <div class="result-card">
+    <div class="tiebreaker-text" style="margin-bottom:2rem;">Heat 1 &mdash; Final Standings</div>
+    <table class="summary-table">
+      <tr><th>#</th><th>Song</th><th>Pts</th><th>Destination</th></tr>
+      <tr class="final-row"><td>1</td><td>Satanized / Ghost</td><td>44</td><td>FINAL</td></tr>
+      <tr class="final-row"><td>2</td><td>In Fire Reborn / The Haunted</td><td>40</td><td>FINAL</td></tr>
+      <tr class="sc-row"><td>3</td><td>Running to You / H.E.A.T</td><td>40</td><td>SECOND CHANCE</td></tr>
+      <tr class="sc-row"><td>4</td><td>I Am War / Megadeth</td><td>39</td><td>SECOND CHANCE</td></tr>
+      <tr class="elim-row"><td>5</td><td>Häxhammaren / Vallgrav</td><td>38</td><td>Eliminated</td></tr>
+      <tr class="elim-row"><td>5</td><td>Break the Spell / Arch Enemy</td><td>38</td><td>Eliminated</td></tr>
+      <tr class="elim-row"><td>7</td><td>Crossing the Rubicon / Sabaton</td><td>37</td><td>Eliminated</td></tr>
+      <tr class="elim-row"><td>8</td><td>The Shit Ov God / Behemoth</td><td>36</td><td>Eliminated</td></tr>
+    </table>
+  </div>
+</div>
+
+<script>
+  function createEmbers() {
+    const body = document.body;
+    for (let i = 0; i < 30; i++) {
+      const ember = document.createElement('div');
+      ember.className = 'ember';
+      ember.style.left = Math.random() * 100 + '%';
+      ember.style.bottom = '-10px';
+      ember.style.animationDuration = (4 + Math.random() * 6) + 's';
+      ember.style.animationDelay = Math.random() * 8 + 's';
+      ember.style.width = (2 + Math.random() * 3) + 'px';
+      ember.style.height = ember.style.width;
+      body.appendChild(ember);
+    }
+  }
+  createEmbers();
+
+  let currentSlide = 0;
+  const totalSlides = 11;
+
+  function flash() {
+    const el = document.getElementById('flash');
+    el.classList.add('flash');
+    setTimeout(() => el.classList.remove('flash'), 150);
+  }
+
+  function updateProgress() {
+    const pct = (currentSlide / (totalSlides - 1)) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+  }
+
+  function nextSlide() {
+    if (currentSlide >= totalSlides - 1) return;
+    const current = document.getElementById('slide-' + currentSlide);
+    current.classList.remove('active');
+    currentSlide++;
+    flash();
+    const next = document.getElementById('slide-' + currentSlide);
+    const card = next.querySelector('.result-card');
+    if (card) {
+      card.style.animation = 'none';
+      card.offsetHeight;
+      card.style.animation = '';
+    }
+    setTimeout(() => {
+      next.classList.add('active');
+      updateProgress();
+    }, 100);
+  }
+
+  document.addEventListener('click', nextSlide);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'Backspace') {
+      if (currentSlide <= 0) return;
+      const current = document.getElementById('slide-' + currentSlide);
+      current.classList.remove('active');
+      currentSlide--;
+      const prev = document.getElementById('slide-' + currentSlide);
+      prev.classList.add('active');
+      updateProgress();
+    } else {
+      nextSlide();
+    }
+  });
+
+  updateProgress();
+</script>
+
+</body>
+</html>
