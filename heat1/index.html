@@ -8,6 +8,7 @@
   @import url('https://fonts.googleapis.com/css2?family=Metal+Mania&family=Oswald:wght@400;700&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { overflow-x: hidden; }
 
   body {
     background: #0a0a0a;
@@ -142,6 +143,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   @keyframes slam-in {
@@ -375,6 +379,31 @@
   .spotify-link:hover {
     background: #1ed760;
     box-shadow: 0 0 25px rgba(29, 185, 84, 0.5);
+  }
+
+  @media (max-width: 600px) {
+    .title-main { font-size: 3.5rem; }
+    .title-sub { font-size: 1.2rem; letter-spacing: 0.3em; }
+    .title-heat { font-size: 2rem; }
+    .position-headline .pos-number { font-size: 3.5rem; }
+    .position-headline .pos-label { font-size: 1.1rem; }
+    .position-headline { margin-bottom: 1rem; }
+    .album-cover { width: 150px; height: 150px; margin-bottom: 1rem; }
+    .band-name { font-size: 2.5rem; }
+    .song-name { font-size: 1.3rem; margin-bottom: 1rem; }
+    .points-display { font-size: 3.5rem; }
+    .winner .band-name { font-size: 3rem; }
+    .winner .album-cover { width: 180px; height: 180px; }
+    .winner .position-headline .pos-number { font-size: 4rem; }
+    .voter-info { gap: 1.5rem; }
+    .tiebreaker-text { font-size: 2rem; }
+    .tiebreaker-detail { font-size: 1rem; }
+    .tiebreaker-covers { gap: 1.5rem; }
+    .tiebreaker-covers img { width: 100px; height: 100px; }
+    .vs-text { font-size: 2rem; }
+    .summary-table { font-size: 0.85rem; }
+    .summary-table th, .summary-table td { padding: 0.4rem 0.6rem; }
+    .destination { font-size: 1.1rem; padding: 0.5rem 1.5rem; }
   }
 </style>
 </head>
