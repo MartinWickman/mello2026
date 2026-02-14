@@ -375,7 +375,12 @@
     border: 2px solid;
     display: inline-block;
     position: relative;
+    opacity: 0;
+    transform: scale(0);
+    pointer-events: none;
   }
+
+  .destination.revealed { pointer-events: auto; }
 
   .dest-eliminated {
     color: #445;
@@ -383,24 +388,89 @@
     background: rgba(30, 30, 50, 0.4);
   }
 
+  .dest-eliminated.revealed {
+    animation: reveal-eliminated 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  }
+
+  @keyframes reveal-eliminated {
+    0% { opacity: 0; transform: translateY(-40px) scaleX(1.8) scaleY(0.2); }
+    40% { opacity: 1; transform: translateY(4px) scaleX(0.95) scaleY(1.05); }
+    60% { transform: translateY(-2px) scaleX(1.02) scaleY(0.98); }
+    100% { opacity: 0.8; transform: translateY(0) scale(1); }
+  }
+
   .dest-secondchance {
     color: #ff7700;
     border-color: #ff7700;
     background: rgba(255, 100, 0, 0.08);
-    box-shadow: 0 0 20px rgba(255, 100, 0, 0.15);
+  }
+
+  .dest-secondchance.revealed {
+    animation: reveal-secondchance 0.8s ease-out forwards;
+  }
+
+  @keyframes reveal-secondchance {
+    0% { opacity: 0; transform: scale(0.3) rotate(-5deg); box-shadow: none; }
+    20% { opacity: 1; transform: scale(1.15) rotate(2deg); box-shadow: 0 0 40px rgba(255, 100, 0, 0.5); }
+    35% { opacity: 0.4; transform: scale(1.05) rotate(-1deg); }
+    50% { opacity: 1; transform: scale(0.97) rotate(0.5deg); box-shadow: 0 0 30px rgba(255, 100, 0, 0.4); }
+    65% { opacity: 0.6; }
+    80% { opacity: 1; transform: scale(1.02) rotate(0deg); }
+    100% { opacity: 1; transform: scale(1); box-shadow: 0 0 20px rgba(255, 100, 0, 0.15); }
   }
 
   .dest-final {
     color: #00ffcc;
     border-color: #00ffcc;
     background: rgba(0, 255, 200, 0.08);
-    box-shadow: 0 0 30px rgba(0, 255, 200, 0.2);
+  }
+
+  .dest-final.revealed {
+    animation: reveal-final 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .dest-final.revealed.pulse-after {
     animation: final-pulse 1.5s ease-in-out infinite alternate;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  @keyframes reveal-final {
+    0% { opacity: 0; transform: scale(0); box-shadow: 0 0 0 0 rgba(0, 255, 200, 0); border-color: transparent; }
+    15% { opacity: 1; transform: scale(1.6); box-shadow: 0 0 80px 20px rgba(0, 255, 200, 0.6), 0 0 120px 40px rgba(0, 255, 200, 0.2); }
+    30% { transform: scale(0.9); box-shadow: 0 0 40px 10px rgba(0, 255, 200, 0.4); }
+    45% { transform: scale(1.1); }
+    60% { transform: scale(0.97); }
+    80% { border-color: #00ffcc; }
+    100% { opacity: 1; transform: scale(1); box-shadow: 0 0 30px rgba(0, 255, 200, 0.2); border-color: #00ffcc; }
   }
 
   @keyframes final-pulse {
     from { box-shadow: 0 0 20px rgba(0, 255, 200, 0.15); }
     to { box-shadow: 0 0 50px rgba(0, 255, 200, 0.4), 0 0 80px rgba(0, 255, 200, 0.15); }
+  }
+
+  /* Winner destination override */
+  .winner .dest-final.revealed {
+    animation: reveal-winner-dest 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .winner .dest-final.revealed.pulse-after {
+    animation: winner-badge 1.5s ease-in-out infinite alternate;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  @keyframes reveal-winner-dest {
+    0% { opacity: 0; transform: scale(0) rotate(-10deg); box-shadow: none; border-color: transparent; color: #fff; }
+    10% { opacity: 1; transform: scale(2) rotate(3deg); box-shadow: 0 0 100px 30px rgba(255, 220, 0, 0.8), 0 0 200px 60px rgba(255, 220, 0, 0.3); color: #fff; }
+    20% { transform: scale(0.8) rotate(-2deg); box-shadow: 0 0 60px 15px rgba(255, 220, 0, 0.5); }
+    35% { opacity: 0.5; transform: scale(1.2) rotate(1deg); }
+    40% { opacity: 1; }
+    50% { transform: scale(0.95) rotate(0deg); }
+    65% { transform: scale(1.05); }
+    80% { border-color: #ffdd00; color: #ffdd00; }
+    100% { opacity: 1; transform: scale(1); box-shadow: 0 0 30px rgba(255, 220, 0, 0.3); border-color: #ffdd00; color: #ffdd00; }
   }
 
   /* ── COMMENTARY ── */
@@ -535,11 +605,7 @@
   }
 
   .winner .dest-final {
-    color: #ffdd00;
-    border-color: #ffdd00;
     background: rgba(255, 220, 0, 0.1);
-    box-shadow: 0 0 30px rgba(255, 220, 0, 0.3);
-    animation: winner-badge 1.5s ease-in-out infinite alternate;
   }
 
   @keyframes winner-badge {
@@ -1187,6 +1253,38 @@
     setTimeout(() => {
       next.classList.add('active');
       updateProgress();
+
+      // Delayed destination badge reveal
+      const dest = next.querySelector('.destination');
+      if (dest) {
+        dest.classList.remove('revealed', 'pulse-after');
+        dest.style.opacity = '0';
+        dest.style.transform = 'scale(0)';
+
+        const delay = dest.classList.contains('dest-final') ? 1800
+                    : dest.classList.contains('dest-secondchance') ? 1500
+                    : 1200;
+
+        setTimeout(() => {
+          dest.style.opacity = '';
+          dest.style.transform = '';
+          dest.classList.add('revealed');
+
+          // Flash + lightning for Final reveals
+          if (dest.classList.contains('dest-final')) {
+            flashScreen(7);
+            spawnLightning(3);
+            if (next.querySelector('.winner')) {
+              setTimeout(() => { flashScreen(9); spawnLightning(4); }, 150);
+            }
+          }
+
+          // After reveal animation ends, switch to sustained pulse
+          if (dest.classList.contains('dest-final')) {
+            setTimeout(() => dest.classList.add('pulse-after'), 1200);
+          }
+        }, delay);
+      }
     }, 80);
   }
 
@@ -1194,6 +1292,9 @@
     if (currentSlide <= 0) return;
     const current = document.getElementById('slide-' + currentSlide);
     current.classList.remove('active');
+    // Reset destination on the slide we're leaving
+    const dest = current.querySelector('.destination');
+    if (dest) dest.classList.remove('revealed', 'pulse-after');
     currentSlide--;
     const prev = document.getElementById('slide-' + currentSlide);
     prev.classList.add('active');
