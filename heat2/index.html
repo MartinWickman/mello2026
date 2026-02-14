@@ -732,6 +732,22 @@
     opacity: 0;
   }
 
+  /* ── BURST PARTICLES ── */
+  .burst-particle {
+    position: fixed;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    z-index: 150;
+    pointer-events: none;
+    animation: particle-burst 0.8s ease-out forwards;
+  }
+
+  @keyframes particle-burst {
+    0% { opacity: 1; transform: translate(0, 0) scale(1); }
+    100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0); }
+  }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 600px) {
     .title-main { font-size: 3.5rem; }
@@ -1193,6 +1209,79 @@
   }
   startAmbientLightning();
 
+  // ── STORE ORIGINAL POINT VALUES ──
+  document.querySelectorAll('.voltage-display').forEach(el => {
+    el.dataset.points = el.textContent.trim();
+  });
+
+  // ── POINTS COUNT-UP ANIMATION ──
+  function animatePoints(element, target, duration) {
+    element.textContent = '0';
+    const start = performance.now();
+    function tick(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      element.textContent = Math.round(eased * target);
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // ── PARTICLE BURST ON DESTINATION REVEAL ──
+  function burstParticles(element, colors, count) {
+    const rect = element.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'burst-particle';
+      const angle = (Math.PI * 2 * i / count) + (Math.random() - 0.5) * 0.6;
+      const dist = 50 + Math.random() * 130;
+      p.style.left = cx + 'px';
+      p.style.top = cy + 'px';
+      p.style.setProperty('--dx', (Math.cos(angle) * dist) + 'px');
+      p.style.setProperty('--dy', (Math.sin(angle) * dist) + 'px');
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+      p.style.boxShadow = `0 0 4px ${colors[0]}`;
+      const size = (3 + Math.random() * 4) + 'px';
+      p.style.width = size;
+      p.style.height = size;
+      p.style.animationDelay = (Math.random() * 0.08) + 's';
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 900);
+    }
+  }
+
+  function getDestinationColors(destEl) {
+    if (destEl.classList.contains('dest-eliminated'))
+      return { colors: ['#556', '#667', '#445'], count: 15 };
+    if (destEl.classList.contains('dest-secondchance'))
+      return { colors: ['#ff7700', '#ff9933', '#ffbb44'], count: 25 };
+    // Final (check for winner)
+    if (destEl.closest('.winner'))
+      return { colors: ['#ffdd00', '#ffee55', '#ffffff', '#ffcc00'], count: 50 };
+    return { colors: ['#00ffcc', '#00ddaa', '#66ffdd', '#aaffee'], count: 35 };
+  }
+
+  // ── BACKGROUND INTENSITY SHIFT ──
+  function updateBackgroundIntensity(slideIndex) {
+    const progress = slideIndex / (totalSlides - 1);
+    const fireBase = document.querySelector('.fire-base');
+    fireBase.style.height = (25 + progress * 35) + '%';
+    fireBase.style.filter = 'brightness(' + (0.5 + progress * 1.5) + ')';
+
+    const bgVoid = document.querySelector('.bg-void');
+    const g = (0.15 + progress * 0.4).toFixed(3);
+    const g2 = (0.08 + progress * 0.25).toFixed(3);
+    bgVoid.style.background =
+      'radial-gradient(ellipse at 50% 0%, rgba(80,0,180,' + g + ') 0%, transparent 60%),' +
+      'radial-gradient(ellipse at 20% 100%, rgba(100,30,255,' + g2 + ') 0%, transparent 50%),' +
+      'radial-gradient(ellipse at 80% 100%, rgba(100,30,255,' + g2 + ') 0%, transparent 50%),' +
+      'linear-gradient(to bottom, #06060e 0%, #0a0018 100%)';
+
+    document.querySelector('.bg-grid').style.opacity = (0.3 + progress * 0.7).toFixed(2);
+  }
+
   // ── SLIDE NAVIGATION ──
   let currentSlide = 0;
   const totalSlides = 11;
@@ -1211,7 +1300,6 @@
     const current = document.getElementById('slide-' + currentSlide);
     current.classList.remove('active');
 
-    // Remove old animation classes from current card
     const oldCard = current.querySelector('.result-card');
     if (oldCard) {
       oldCard.classList.remove('anim-fade', 'anim-slide', 'anim-crash', 'anim-shatter', 'anim-nuclear');
@@ -1221,31 +1309,31 @@
     const next = document.getElementById('slide-' + currentSlide);
     const intensity = parseInt(next.dataset.intensity) || 1;
 
-    // Apply progressive effects
+    // Visual: flash
     flashScreen(intensity);
 
-    if (intensity >= 3) {
-      screenShake(intensity);
-    }
+    // Visual: shake (intensity 3+)
+    if (intensity >= 3) screenShake(intensity);
 
+    // Visual: lightning (intensity 4+) with thunder sound
     if (intensity >= 4) {
       spawnLightning(Math.floor(intensity * 0.8));
     }
 
-    // Winner gets extra sustained lightning
+    // Winner: sustained lightning barrage
     if (intensity >= 9) {
       setTimeout(() => spawnLightning(5), 300);
       setTimeout(() => spawnLightning(3), 600);
       setTimeout(() => spawnLightning(2), 900);
     }
 
-    // Apply entry animation to card
+    // Entry animation
     const card = next.querySelector('.result-card');
     if (card) {
       const animClass = getEntryAnimation(intensity);
       card.classList.remove('anim-fade', 'anim-slide', 'anim-crash', 'anim-shatter', 'anim-nuclear');
       card.style.animation = 'none';
-      card.offsetHeight; // trigger reflow
+      card.offsetHeight;
       card.style.animation = '';
       card.classList.add(animClass);
     }
@@ -1253,6 +1341,13 @@
     setTimeout(() => {
       next.classList.add('active');
       updateProgress();
+      updateBackgroundIntensity(currentSlide);
+
+      // Points count-up animation
+      const voltageEl = next.querySelector('.voltage-display');
+      if (voltageEl && voltageEl.dataset.points) {
+        animatePoints(voltageEl, parseInt(voltageEl.dataset.points), 700 + intensity * 60);
+      }
 
       // Delayed destination badge reveal
       const dest = next.querySelector('.destination');
@@ -1270,17 +1365,18 @@
           dest.style.transform = '';
           dest.classList.add('revealed');
 
-          // Flash + lightning for Final reveals
+          // Particle burst
+          const { colors, count } = getDestinationColors(dest);
+          burstParticles(dest, colors, count);
+
+          // Extra effects for Final
           if (dest.classList.contains('dest-final')) {
             flashScreen(7);
             spawnLightning(3);
             if (next.querySelector('.winner')) {
               setTimeout(() => { flashScreen(9); spawnLightning(4); }, 150);
+              setTimeout(() => burstParticles(dest, colors, 30), 200);
             }
-          }
-
-          // After reveal animation ends, switch to sustained pulse
-          if (dest.classList.contains('dest-final')) {
             setTimeout(() => dest.classList.add('pulse-after'), 1200);
           }
         }, delay);
@@ -1292,13 +1388,16 @@
     if (currentSlide <= 0) return;
     const current = document.getElementById('slide-' + currentSlide);
     current.classList.remove('active');
-    // Reset destination on the slide we're leaving
     const dest = current.querySelector('.destination');
     if (dest) dest.classList.remove('revealed', 'pulse-after');
     currentSlide--;
     const prev = document.getElementById('slide-' + currentSlide);
     prev.classList.add('active');
+    // Restore points instantly (no animation on going back)
+    const voltageEl = prev.querySelector('.voltage-display');
+    if (voltageEl && voltageEl.dataset.points) voltageEl.textContent = voltageEl.dataset.points;
     updateProgress();
+    updateBackgroundIntensity(currentSlide);
   }
 
   function updateProgress() {
