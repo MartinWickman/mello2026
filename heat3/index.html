@@ -881,6 +881,7 @@
         var commentary = card.querySelector('.commentary');
         var voterInfo = card.querySelector('.voter-info');
         var isWinner = card.classList.contains('winner');
+        var isFinal = destination ? destination.classList.contains('dest-final') : false;
 
         // ── HEADLINE: per-character stagger with intensity-scaled physics ──
         if (headline) {
@@ -992,7 +993,6 @@
 
         // ── DESTINATION: multi-stage GSAP keyframes ──
         if (destination) {
-            var isFinal = destination.classList.contains('dest-final');
             var isSC = destination.classList.contains('dest-secondchance');
             var destDelay = isFinal ? 1.0 : isSC ? 0.6 : 0.3;
 
@@ -1017,20 +1017,26 @@
             } else if (isFinal) {
                 tl.to(destination, {
                     keyframes: [
-                        { opacity: 1, scale: 1.6, duration: 0.25, ease: 'power4.out' },
-                        { scale: 0.9, duration: 0.12, ease: 'power2.in' },
+                        { opacity: 1, scale: 2.0, duration: 0.2, ease: 'power4.out' },
+                        { scale: 0.75, duration: 0.1, ease: 'power2.in' },
+                        { scale: 1.3, duration: 0.12, ease: 'power3.out' },
+                        { scale: 0.9, duration: 0.08, ease: 'power2.in' },
                         { scale: 1.05, duration: 0.1, ease: 'power2.out' },
-                        { scale: 1, duration: 0.15, ease: 'power1.out' }
+                        { scale: 1, duration: 0.15, ease: 'elastic.out(1, 0.6)' }
                     ],
                     delay: destDelay,
                     onStart: function() {
-                        flashScreen(7);
+                        flashScreen(8); screenShake(7); impactDistortion(6);
                         var r = destination.getBoundingClientRect();
-                        particleBurst(20, '#4dc9f6', r.left + r.width / 2, r.top + r.height / 2);
+                        particleBurst(40, '#4dc9f6', r.left + r.width / 2, r.top + r.height / 2);
+                        setTimeout(function() {
+                            particleBurst(25, '#44cc88', r.left + r.width / 2, r.top + r.height / 2);
+                        }, 250);
+                        setTimeout(function() { flashScreen(5); }, 350);
                     },
                     onComplete: function() {
                         glowTween = gsap.to(destination, {
-                            boxShadow: '0 0 40px rgba(77,201,246,0.4), 0 0 80px rgba(77,201,246,0.15)',
+                            boxShadow: '0 0 50px rgba(77,201,246,0.5), 0 0 100px rgba(77,201,246,0.2)',
                             duration: 1.5, repeat: -1, yoyo: true, ease: 'sine.inOut'
                         });
                     }
@@ -1052,7 +1058,7 @@
 
         // ── COMMENTARY: TextPlugin typewriter for the winner ──
         if (commentary) {
-            if (intensity >= 9 && isWinner) {
+            if (intensity >= 8 && (isWinner || isFinal)) {
                 var fullText = commentary.dataset.originalText || commentary.textContent;
                 if (!commentary.dataset.originalText) commentary.dataset.originalText = fullText;
                 commentary.textContent = '';
@@ -1137,6 +1143,13 @@
                 gsap.fromTo(el, { opacity: 1 }, { opacity: 0, duration: 0.5, ease: 'power2.out' });
             }, 500);
             setTimeout(function() { flashScreen(6); }, 800);
+        } else if (intensity >= 8) {
+            setTimeout(function() { flashScreen(6); }, 250);
+            setTimeout(function() {
+                var el = document.getElementById('flash');
+                el.style.background = 'rgba(77,201,246,0.4)';
+                gsap.fromTo(el, { opacity: 1 }, { opacity: 0, duration: 0.4, ease: 'power2.out' });
+            }, 500);
         }
 
         prepareSlideForAnimation(next);
