@@ -177,28 +177,32 @@
 
         /* ── RUNE DIVIDER ── */
         .rune-divider {
+            display: flex;
+            align-items: center;
             width: 200px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #4dc9f6, #44cc88, #4dc9f6, transparent);
             margin: 1rem 0;
-            position: relative;
-            box-shadow: 0 0 8px rgba(77, 201, 246, 0.4);
-        }
-
-        .rune-divider::after {
-            content: 'ᚠ ᚢ ᚦ';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             font-size: 0.9rem;
             color: #4dc9f6;
             text-shadow: 0 0 10px rgba(77, 201, 246, 0.8);
             letter-spacing: 0.4em;
             white-space: nowrap;
-            background: #0a0a14;
-            padding: 0 0.6rem;
         }
+
+        .rune-divider::before,
+        .rune-divider::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4dc9f6, #44cc88);
+            box-shadow: 0 0 8px rgba(77, 201, 246, 0.4);
+        }
+
+        .rune-divider::after {
+            background: linear-gradient(90deg, #44cc88, #4dc9f6, transparent);
+        }
+
+        .rune-divider::before { margin-right: 0.6rem; }
+        .rune-divider::after { margin-left: 0.6rem; }
 
         /* ── BAND & SONG ── */
         .band-name {
@@ -337,14 +341,18 @@
 
         .winner .rune-divider {
             width: 300px;
-            background: linear-gradient(90deg, transparent, #ffd700, #fff, #ffd700, transparent);
+            color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+
+        .winner .rune-divider::before {
+            background: linear-gradient(90deg, transparent, #ffd700, #fff);
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
         }
 
         .winner .rune-divider::after {
-            content: 'ᚠ ᚨ ᚱ ᚲ';
-            color: #ffd700;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            background: linear-gradient(90deg, #fff, #ffd700, transparent);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
         }
 
         .winner .dest-final {
@@ -460,7 +468,7 @@
         <div class="dramatic-sub">Eighth Place</div>
         <div class="band-name" style="color:#556677;">Everon</div>
         <div class="song-name">"OCD"</div>
-        <div class="rune-divider"></div>
+        <div class="rune-divider">ᚠ ᚢ ᚦ</div>
         <div class="points-display" style="color:#556677;" data-points="31">0</div>
         <div class="points-label">Total Points</div>
         <div class="destination dest-eliminated">Eliminated</div>
@@ -485,7 +493,7 @@
         <div class="dramatic-sub">Seventh Place</div>
         <div class="band-name" style="color:#667788;">Sweden Metal Aid</div>
         <div class="song-name">"Sirens"</div>
-        <div class="rune-divider"></div>
+        <div class="rune-divider">ᚠ ᚢ ᚦ</div>
         <div class="points-display" style="color:#667788;" data-points="35">0</div>
         <div class="points-label">Total Points</div>
         <div class="destination dest-eliminated">Eliminated</div>
@@ -510,7 +518,7 @@
         <div class="dramatic-sub">Sixth Place</div>
         <div class="band-name" style="color:#778899;">Tremonti</div>
         <div class="song-name">"Live in Fear"</div>
-        <div class="rune-divider"></div>
+        <div class="rune-divider">ᚠ ᚢ ᚦ</div>
         <div class="points-display" style="color:#778899;" data-points="39">0</div>
         <div class="points-label">Total Points</div>
         <div class="destination dest-eliminated">Eliminated</div>
@@ -535,7 +543,7 @@
         <div class="dramatic-sub">Fifth Place</div>
         <div class="band-name" style="color:#99aabb;">Machine Head</div>
         <div class="song-name">"Unbound"</div>
-        <div class="rune-divider"></div>
+        <div class="rune-divider">ᚠ ᚢ ᚦ</div>
         <div class="points-display" style="color:#99aabb;" data-points="42">0</div>
         <div class="points-label">Total Points</div>
         <div class="destination dest-eliminated">Eliminated</div>
@@ -560,7 +568,7 @@
         <div class="dramatic-sub">Fourth Place</div>
         <div class="band-name">Bad Intentions</div>
         <div class="song-name">"One Way Road"</div>
-        <div class="rune-divider"></div>
+        <div class="rune-divider">ᚠ ᚢ ᚦ</div>
         <div class="points-display" data-points="43">0</div>
         <div class="points-label">Total Points</div>
         <div class="destination dest-secondchance">Andra Chansen</div>
@@ -585,7 +593,7 @@
         <div class="dramatic-sub">Third Place</div>
         <div class="band-name">Havamal</div>
         <div class="song-name">"The Shaman"</div>
-        <div class="rune-divider"></div>
+        <div class="rune-divider">ᚠ ᚢ ᚦ</div>
         <div class="points-display" data-points="44">0</div>
         <div class="points-label">Total Points</div>
         <div class="destination dest-secondchance">Andra Chansen</div>
@@ -610,7 +618,7 @@
         <div class="dramatic-sub">Second Place</div>
         <div class="band-name" style="color:#6dd6ff;">Hällas</div>
         <div class="song-name">"Face of an Angel"</div>
-        <div class="rune-divider" style="background:linear-gradient(90deg,transparent,#4dc9f6,#e0eaff,#4dc9f6,transparent); box-shadow:0 0 12px rgba(77,201,246,0.5);"></div>
+        <div class="rune-divider">ᚠ ᚢ ᚦ</div>
         <div class="points-display" style="color:#4dc9f6;" data-points="57">0</div>
         <div class="points-label">Total Points</div>
         <div class="destination dest-final">Direct to Final</div>
@@ -635,7 +643,7 @@
         <div class="dramatic-sub" style="color:#c9a84c; letter-spacing:0.6em;">Heat 3 Champion</div>
         <div class="band-name">Amorphis</div>
         <div class="song-name">"Light and Shadow"</div>
-        <div class="rune-divider"></div>
+        <div class="rune-divider">ᚠ ᚨ ᚱ ᚲ</div>
         <div class="points-display" data-points="60">0</div>
         <div class="points-label">Total Points</div>
         <div class="destination dest-final">Heat 3 Winner &bull; Direct to Final</div>
