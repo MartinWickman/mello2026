@@ -253,9 +253,9 @@
         }
 
         .dest-eliminated {
-            color: #445566;
-            border-color: #223344;
-            background: rgba(20, 30, 50, 0.4);
+            color: #99aabb;
+            border-color: #556677;
+            background: rgba(40, 55, 75, 0.5);
         }
 
         .dest-secondchance {
@@ -273,7 +273,7 @@
         /* ── COMMENTARY ── */
         .commentary {
             margin-top: 1.2rem;
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #8899aa;
             font-style: italic;
             max-width: 550px;
@@ -429,7 +429,7 @@
             .winner .band-name { font-size: 2.8rem; }
             .winner .points-display { font-size: 5rem; }
             .destination { font-size: 1rem; padding: 0.4rem 1.5rem; }
-            .commentary { font-size: 0.85rem; max-width: 90vw; }
+            .commentary { font-size: 0.95rem; max-width: 90vw; }
             .voter-info { gap: 1.5rem; }
             .summary-table { font-size: 0.85rem; }
             .summary-table th, .summary-table td { padding: 0.4rem 0.5rem; }
@@ -1052,26 +1052,40 @@
                     delay: destDelay
                 });
             } else {
-                tl.fromTo(destination, { opacity: 0, scale: 0 },
-                    { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.5)', delay: destDelay });
+                tl.to(destination, {
+                    keyframes: [
+                        { opacity: 1, scale: 1.8, duration: 0.15, ease: 'power4.out' },
+                        { scale: 0.7, duration: 0.1, ease: 'power2.in' },
+                        { scale: 1.15, rotation: -1.5, duration: 0.1, ease: 'power2.out' },
+                        { scale: 0.95, rotation: 1, duration: 0.08, ease: 'power2.in' },
+                        { scale: 1, rotation: 0, duration: 0.15, ease: 'elastic.out(1, 0.5)' }
+                    ],
+                    delay: destDelay,
+                    onStart: function() {
+                        flashScreen(Math.max(intensity, 3));
+                        screenShake(Math.max(intensity, 2));
+                        var r = destination.getBoundingClientRect();
+                        particleBurst(12 + intensity * 2, '#99aabb', r.left + r.width / 2, r.top + r.height / 2);
+                    }
+                });
             }
         }
 
-        // ── COMMENTARY: TextPlugin typewriter for the winner ──
+        // ── COMMENTARY: delayed reveal after destination ──
         if (commentary) {
             if (intensity >= 8 && (isWinner || isFinal)) {
                 var fullText = commentary.dataset.originalText || commentary.textContent;
                 if (!commentary.dataset.originalText) commentary.dataset.originalText = fullText;
                 commentary.textContent = '';
-                tl.set(commentary, { opacity: 1 });
+                tl.set(commentary, { opacity: 1 }, '+=0.8');
                 tl.to(commentary, {
                     duration: Math.min(fullText.length * 0.018, 5),
                     text: { value: fullText, delimiter: '' },
                     ease: 'none'
-                }, '-=0.3');
+                });
             } else {
                 tl.fromTo(commentary, { opacity: 0, y: 15 },
-                    { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }, '-=0.3');
+                    { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }, '+=0.6');
             }
         }
 
