@@ -26,7 +26,7 @@ def parse_tsv(filepath):
     songs = []
     song_cols = []
     for i, col in enumerate(header):
-        if col.startswith("Lyssna"):
+        if col.startswith("Lyssna") or col.startswith("Bring on them votes!"):
             # Extract "Song / Band" from "Lyssna, njut och rösta!  [Song / Band]"
             name = col.split("[")[1].rstrip("]")
             songs.append(name)

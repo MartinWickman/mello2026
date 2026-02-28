@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MELLO 2026 - Heat 4 Results</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Metal+Mania&family=Oswald:wght@400;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { overflow-x: hidden; }
+
+        body {
+            background: #050510;
+            color: #c8c8e0;
+            font-family: 'Oswald', sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+            min-height: 100vh;
+            width: 100vw;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* ── NEBULA BACKGROUND ── */
+        .bg-nebula {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 15%, rgba(224, 64, 251, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 10%, rgba(124, 77, 255, 0.06) 0%, transparent 45%),
+                radial-gradient(ellipse at 80% 25%, rgba(0, 229, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(ellipse at 35% 80%, rgba(224, 64, 251, 0.04) 0%, transparent 40%);
+            z-index: 1;
+            pointer-events: none;
+            filter: blur(30px);
+            animation: nebula-shift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes nebula-shift {
+            0% { transform: translateY(0) scaleY(1); opacity: 0.6; filter: blur(30px) hue-rotate(0deg); }
+            50% { transform: translateY(-3%) scaleY(1.1); opacity: 0.9; filter: blur(35px) hue-rotate(20deg); }
+            100% { transform: translateY(2%) scaleY(0.95); opacity: 0.7; filter: blur(30px) hue-rotate(-15deg); }
+        }
+
+        /* ── VOID BASE ── */
+        .void-base {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 25%;
+            background:
+                radial-gradient(ellipse at 30% 100%, rgba(124, 77, 255, 0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 70% 100%, rgba(224, 64, 251, 0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 100%, rgba(200, 200, 255, 0.03) 0%, transparent 50%);
+            z-index: 1;
+            pointer-events: none;
+            animation: void-pulse 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes void-pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.6; }
+        }
+
+        /* ── STARFIELD ── */
+        .star {
+            position: fixed;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 15;
+            pointer-events: none;
+            animation: stardrift linear infinite;
+        }
+
+        @keyframes stardrift {
+            0% { opacity: 0; transform: translateY(5vh) translateX(0); }
+            10% { opacity: var(--star-opacity, 0.7); }
+            90% { opacity: var(--star-opacity, 0.5); }
+            100% { opacity: 0; transform: translateY(-105vh) translateX(var(--drift, 10px)); }
+        }
+
+        /* ── SLIDES ── */
+        .slide {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 1rem;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .slide.active { pointer-events: auto; }
+
+        /* ── TITLE SLIDE ── */
+        .title-main {
+            font-family: 'Metal Mania', cursive;
+            font-size: 6rem;
+            color: #e040fb;
+            text-shadow:
+                0 0 20px rgba(224, 64, 251, 0.8),
+                0 0 40px rgba(224, 64, 251, 0.4),
+                0 0 80px rgba(124, 77, 255, 0.3),
+                3px 3px 0 #000;
+            letter-spacing: 0.1em;
+            animation: title-cosmic 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes title-cosmic {
+            0% { text-shadow: 0 0 20px rgba(224, 64, 251, 0.8), 0 0 40px rgba(224, 64, 251, 0.4), 3px 3px 0 #000; color: #e040fb; }
+            50% { text-shadow: 0 0 30px rgba(124, 77, 255, 0.9), 0 0 60px rgba(124, 77, 255, 0.5), 0 0 100px rgba(124, 77, 255, 0.2), 3px 3px 0 #000; color: #9c5cff; }
+            100% { text-shadow: 0 0 25px rgba(224, 64, 251, 0.9), 0 0 50px rgba(224, 64, 251, 0.5), 3px 3px 0 #000; color: #ee60ff; }
+        }
+
+        .title-sub {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            color: #8090a8;
+            text-transform: uppercase;
+            letter-spacing: 0.6em;
+            margin-top: 1rem;
+        }
+
+        .title-heat {
+            font-family: 'Metal Mania', cursive;
+            font-size: 3rem;
+            color: #7c4dff;
+            text-shadow: 0 0 15px rgba(124, 77, 255, 0.5);
+            margin-top: 2rem;
+        }
+
+        .title-glyphs {
+            font-size: 1.6rem;
+            color: #e040fb;
+            letter-spacing: 0.8em;
+            margin-top: 1.5rem;
+            opacity: 0.5;
+            text-shadow: 0 0 8px rgba(224, 64, 251, 0.4);
+        }
+
+        /* ── DRAMATIC HEADLINE ── */
+        .dramatic-headline {
+            font-family: 'Metal Mania', cursive;
+            font-size: 4.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.3rem;
+            line-height: 1.1;
+        }
+
+        .dramatic-sub {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.3rem;
+            color: #8090a8;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            margin-bottom: 2rem;
+        }
+
+        /* ── RESULT CARD ── */
+        .result-card {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90vw;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+
+        /* ── COSMIC DIVIDER ── */
+        .cosmic-divider {
+            display: flex;
+            align-items: center;
+            width: 200px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: #e040fb;
+            text-shadow: 0 0 10px rgba(224, 64, 251, 0.8);
+            letter-spacing: 0.4em;
+            white-space: nowrap;
+        }
+
+        .cosmic-divider::before,
+        .cosmic-divider::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #e040fb, #7c4dff);
+            box-shadow: 0 0 8px rgba(224, 64, 251, 0.4);
+        }
+
+        .cosmic-divider::after {
+            background: linear-gradient(90deg, #7c4dff, #e040fb, transparent);
+        }
+
+        .cosmic-divider::before { margin-right: 0.6rem; }
+        .cosmic-divider::after { margin-left: 0.6rem; }
+
+        /* ── BAND & SONG ── */
+        .band-name {
+            font-family: 'Metal Mania', cursive;
+            font-size: 3.5rem;
+            color: #e040fb;
+            text-shadow: 0 0 20px rgba(224, 64, 251, 0.6), 2px 2px 0 #000;
+            margin-bottom: 0.3rem;
+            line-height: 1.15;
+        }
+
+        .song-name {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.6rem;
+            color: #8090a8;
+            font-style: italic;
+            margin-bottom: 0.8rem;
+        }
+
+        /* ── POINTS DISPLAY ── */
+        .points-display {
+            font-family: 'Metal Mania', cursive;
+            font-size: 5.5rem;
+            color: #e040fb;
+            text-shadow:
+                0 0 20px rgba(224, 64, 251, 0.6),
+                0 0 40px rgba(224, 64, 251, 0.3);
+            line-height: 1;
+            letter-spacing: 0.05em;
+        }
+
+        .points-label {
+            font-size: 0.9rem;
+            color: #7889;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            margin-bottom: 1rem;
+        }
+
+        /* ── DESTINATION BADGES ── */
+        .destination {
+            margin-top: 1rem;
+            padding: 0.5rem 2rem;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            border: 2px solid;
+            display: inline-block;
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        .dest-eliminated {
+            color: #8090a8;
+            border-color: #445566;
+            background: rgba(40, 45, 65, 0.5);
+        }
+
+        .dest-secondchance {
+            color: #7c4dff;
+            border-color: #7c4dff;
+            background: rgba(124, 77, 255, 0.08);
+        }
+
+        .dest-final {
+            color: #00e5ff;
+            border-color: #00e5ff;
+            background: rgba(0, 229, 255, 0.08);
+        }
+
+        /* ── COMMENTARY ── */
+        .commentary {
+            margin-top: 1.2rem;
+            font-size: 1.1rem;
+            color: #8899bb;
+            font-style: italic;
+            max-width: 550px;
+            line-height: 1.6;
+        }
+
+        /* ── VOTER INFO ── */
+        .voter-info {
+            margin-top: 1.2rem;
+            display: flex;
+            gap: 3rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .voter-group { text-align: center; }
+
+        .voter-label {
+            font-size: 0.8rem;
+            color: #7889;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 0.3rem;
+        }
+
+        .voter-names { font-size: 1.1rem; color: #b0b8d0; }
+        .voter-names.champion { color: #e040fb; text-shadow: 0 0 8px rgba(224, 64, 251, 0.4); }
+        .voter-names.hater { color: #ff5566; }
+
+        /* ── WINNER OVERRIDES ── */
+        .winner .dramatic-headline {
+            font-size: 5.5rem;
+            color: #ffd700;
+            text-shadow:
+                0 0 30px rgba(255, 215, 0, 0.8),
+                0 0 60px rgba(255, 215, 0, 0.4),
+                0 0 120px rgba(255, 180, 0, 0.2),
+                3px 3px 0 #000;
+            animation: winner-glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes winner-glow {
+            from { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4), 3px 3px 0 #000; }
+            to { text-shadow: 0 0 50px rgba(255, 215, 0, 1), 0 0 100px rgba(255, 215, 0, 0.6), 0 0 150px rgba(255, 180, 0, 0.3), 3px 3px 0 #000; }
+        }
+
+        .winner .band-name {
+            font-size: 4.5rem;
+            color: #ffd700;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4), 3px 3px 0 #000;
+        }
+
+        .winner .points-display {
+            font-size: 7rem;
+            color: #ffd700;
+            text-shadow:
+                0 0 30px rgba(255, 215, 0, 0.8),
+                0 0 60px rgba(255, 215, 0, 0.4),
+                0 0 100px rgba(255, 180, 0, 0.2);
+        }
+
+        .winner .cosmic-divider {
+            width: 300px;
+            color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+
+        .winner .cosmic-divider::before {
+            background: linear-gradient(90deg, transparent, #ffd700, #fff);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .winner .cosmic-divider::after {
+            background: linear-gradient(90deg, #fff, #ffd700, transparent);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .winner .dest-final {
+            color: #ffd700;
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .winner .voter-names.champion { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+
+        /* ── MOURNING OVERRIDES (Year of the Goat) ── */
+        .mourning .dramatic-headline {
+            color: #9c27b0 !important;
+            text-shadow: 0 0 20px rgba(156,39,176,0.8), 0 0 40px rgba(156,39,176,0.4), 3px 3px 0 #000 !important;
+        }
+
+        .mourning .band-name {
+            color: #e040fb !important;
+            text-shadow: 0 0 25px rgba(224,64,251,0.7), 2px 2px 0 #000 !important;
+        }
+
+        .mourning .points-display {
+            color: #9c27b0 !important;
+            text-shadow: 0 0 20px rgba(156,39,176,0.6), 0 0 40px rgba(156,39,176,0.3) !important;
+        }
+
+        .mourning .dest-eliminated {
+            color: #ff3366;
+            border-color: #ff3366;
+            background: rgba(255, 51, 102, 0.1);
+        }
+
+        .mourning .commentary {
+            color: #bb99dd;
+            max-width: 600px;
+        }
+
+        .mourning-note {
+            font-family: 'Metal Mania', cursive;
+            font-size: 1.5rem;
+            color: #ff3366;
+            text-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
+            margin-top: 0.5rem;
+            opacity: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            animation: mourn-pulse 2s ease-in-out infinite alternate paused;
+        }
+
+        .mourning-note.visible {
+            animation-play-state: running;
+        }
+
+        @keyframes mourn-pulse {
+            from { text-shadow: 0 0 15px rgba(255, 51, 102, 0.5); }
+            to { text-shadow: 0 0 30px rgba(255, 51, 102, 0.9), 0 0 60px rgba(255, 51, 102, 0.3); }
+        }
+
+        /* ── FLASH OVERLAY ── */
+        .flash-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ── PROGRESS BAR ── */
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #7c4dff, #e040fb);
+            z-index: 100;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(224, 64, 251, 0.5);
+        }
+
+        /* ── SUMMARY TABLE ── */
+        .summary-table {
+            border-collapse: collapse;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+        }
+
+        .summary-table th {
+            color: #e040fb;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.6rem 1.2rem;
+            border-bottom: 2px solid #1a1a2e;
+            font-weight: 700;
+        }
+
+        .summary-table td {
+            padding: 0.5rem 1.2rem;
+            border-bottom: 1px solid #0d0d1a;
+            text-align: center;
+        }
+
+        .summary-table td:nth-child(2) { text-align: left; }
+        .summary-table tr.final-row td { color: #00e5ff; }
+        .summary-table tr.sc-row td { color: #7c4dff; }
+        .summary-table tr.elim-row td { color: #445566; }
+
+        .summary-heading {
+            font-family: 'Metal Mania', cursive;
+            font-size: 3rem;
+            color: #e040fb;
+            text-shadow: 0 0 15px rgba(224, 64, 251, 0.4);
+            margin-bottom: 2rem;
+        }
+
+        /* ── CHARACTER SPANS (for GSAP stagger) ── */
+        .char { display: inline-block; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            .title-main { font-size: 3.5rem; }
+            .title-sub { font-size: 1.1rem; letter-spacing: 0.3em; }
+            .title-heat { font-size: 1.8rem; }
+            .title-glyphs { font-size: 1.1rem; }
+            .dramatic-headline { font-size: 2.8rem; }
+            .dramatic-sub { font-size: 1rem; }
+            .band-name { font-size: 2.2rem; }
+            .song-name { font-size: 1.2rem; }
+            .points-display { font-size: 3.5rem; }
+            .winner .dramatic-headline { font-size: 3.5rem; }
+            .winner .band-name { font-size: 2.8rem; }
+            .winner .points-display { font-size: 5rem; }
+            .destination { font-size: 1rem; padding: 0.4rem 1.5rem; }
+            .commentary { font-size: 0.95rem; max-width: 90vw; }
+            .voter-info { gap: 1.5rem; }
+            .summary-table { font-size: 0.85rem; }
+            .summary-table th, .summary-table td { padding: 0.4rem 0.5rem; }
+            .summary-heading { font-size: 2rem; }
+            .cosmic-divider { width: 120px; }
+            .mourning-note { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-nebula"></div>
+<div class="void-base"></div>
+<div class="flash-overlay" id="flash"></div>
+<div class="progress-bar" id="progress"></div>
+
+<!-- ═══════ Slide 0: Title ═══════ -->
+<div class="slide active" id="slide-0" style="opacity:1;">
+    <div class="title-main">MELLO 2026</div>
+    <div class="title-sub">Beyond the Void</div>
+    <div class="title-heat">Heat 4 Results</div>
+    <div class="title-glyphs">&#10022; &#9826; &#10023; &#9733; &#9826; &#10022;</div>
+</div>
+
+<!-- ═══════ Slide 1: #8 — Deafheaven ═══════ -->
+<div class="slide" id="slide-1" data-intensity="1">
+    <div class="result-card">
+        <div class="dramatic-headline" style="color:#445566;">SWALLOWED BY THE VOID</div>
+        <div class="dramatic-sub">Eighth Place</div>
+        <div class="band-name" style="color:#556677;">Deafheaven</div>
+        <div class="song-name">"Heathen"</div>
+        <div class="cosmic-divider">&#10022; &#10023; &#10022;</div>
+        <div class="points-display" style="color:#556677;" data-points="22">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-eliminated">Eliminated</div>
+        <div class="commentary">Dead last with 22 points &mdash; the lowest score in the heat. Three voters &mdash; Fredda, Tompa, and Ola &mdash; cast Deafheaven into the black hole with 1-point votes. Not a single champion emerged. The blackgaze pioneers gazed into the abyss &mdash; and the abyss yawned.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champion (10p)</div>
+                <div class="voter-names" style="color:#334455;">None</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names hater">Fredda, Tompa, Ola</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ Slide 2: #7 — Offerblod ═══════ -->
+<div class="slide" id="slide-2" data-intensity="2">
+    <div class="result-card">
+        <div class="dramatic-headline" style="color:#556677;">SCATTERED TO DUST</div>
+        <div class="dramatic-sub">Seventh Place</div>
+        <div class="band-name" style="color:#667788;">Offerblod</div>
+        <div class="song-name">"Mot Babylon"</div>
+        <div class="cosmic-divider">&#10022; &#10023; &#10022;</div>
+        <div class="points-display" style="color:#667788;" data-points="26">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-eliminated">Eliminated</div>
+        <div class="commentary">FOUR haters &mdash; Solj&auml;garen, Anders, Kalle, and Wickman &mdash; the most bottom votes in the entire heat. Not a single champion rose to defend the sacrificial blood. Mot Babylon was a dead-end highway through a dead-end galaxy.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champion (10p)</div>
+                <div class="voter-names" style="color:#334455;">None</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names hater">Solj&auml;garen, Anders, Kalle, Wickman</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ Slide 3: #6 — Avatar ═══════ -->
+<div class="slide" id="slide-3" data-intensity="3">
+    <div class="result-card">
+        <div class="dramatic-headline" style="color:#667788;">STAR COLLAPSED</div>
+        <div class="dramatic-sub">Sixth Place</div>
+        <div class="band-name" style="color:#778899;">Avatar</div>
+        <div class="song-name">"Captain Goat"</div>
+        <div class="cosmic-divider">&#10022; &#10023; &#10022;</div>
+        <div class="points-display" style="color:#778899;" data-points="42">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-eliminated">Eliminated</div>
+        <div class="commentary">The paradox of polarization: TWO champions &mdash; Tompa and Anders &mdash; yet still eliminated. Fezz dealt the killing blow with 1 point. When your star burns this hot for some and this cold for others, it collapses under its own contradictions. The Captain goes down with the ship.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champions (10p)</div>
+                <div class="voter-names champion">Tompa, Anders</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names hater">Fezz</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ Slide 4: #5 — Year of the Goat (MOURNING) ═══════ -->
+<div class="slide" id="slide-4" data-intensity="6">
+    <div class="result-card mourning">
+        <div class="dramatic-headline">A TRAVESTY</div>
+        <div class="dramatic-sub">Fifth Place</div>
+        <div class="band-name">Year of the Goat</div>
+        <div class="song-name">"Alucarda"</div>
+        <div class="cosmic-divider">&#10022; &#10023; &#10022;</div>
+        <div class="points-display" data-points="44">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-eliminated">Eliminated</div>
+        <div class="mourning-note">Just 2 points from salvation</div>
+        <div class="commentary">Just TWO POINTS from Andra Chansen. Two. Points. Wickman stood alone as the sole champion, bestowing 10 sacred points upon Alucarda. Fezz almost joined with 8. But then&hellip; Peppe and Tompa &mdash; the DISGRACE &mdash; gave only 2 points each. TWO POINTS for Year of the Goat?! Not a single voter had the cruelty to give 1 point, meaning everyone acknowledged quality &mdash; yet too few gave enough. This was a top-tier song and you all know it. We are ALL diminished by this result. A moment of silence for what should have been.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champion (10p)</div>
+                <div class="voter-names champion" style="color:#e040fb; text-shadow:0 0 8px rgba(224,64,251,0.5);">Wickman</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names" style="color:#334455;">None &mdash; and yet, not enough</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ Slide 5: #4 — Venemous ═══════ -->
+<div class="slide" id="slide-5" data-intensity="6">
+    <div class="result-card">
+        <div class="dramatic-headline" style="color:#7c4dff;">ORBIT HOLDS</div>
+        <div class="dramatic-sub">Fourth Place</div>
+        <div class="band-name">Venemous</div>
+        <div class="song-name">"Of the Battles"</div>
+        <div class="cosmic-divider">&#10022; &#10023; &#10022;</div>
+        <div class="points-display" data-points="46">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-secondchance">Andra Chansen</div>
+        <div class="commentary">Ola injected the venom with a 10-point strike. No haters in sight &mdash; a clean, respectable run through the cosmos. 46 points secures the final orbit before the Final &mdash; Andra Chansen awaits. The battles are far from over.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champion (10p)</div>
+                <div class="voter-names champion">Ola</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names" style="color:#334455;">None</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ Slide 6: #3 — Hellacopters ═══════ -->
+<div class="slide" id="slide-6" data-intensity="7">
+    <div class="result-card">
+        <div class="dramatic-headline" style="color:#9966ff;">BURNING THROUGH ATMOSPHERE</div>
+        <div class="dramatic-sub">Third Place</div>
+        <div class="band-name">Hellacopters</div>
+        <div class="song-name">"Don't Let Me Bring You Down"</div>
+        <div class="cosmic-divider">&#10022; &#10023; &#10022;</div>
+        <div class="points-display" data-points="52">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-secondchance">Andra Chansen</div>
+        <div class="commentary">Two champions &mdash; Fredda and Kalle &mdash; fueled the Hellacopters with 10 points each, but Peppe tried to shoot them down with a solitary 1 point. 52 points sets them ablaze on re-entry to Andra Chansen. Don't let it bring you down &mdash; the Hellacopters always fly again.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champions (10p)</div>
+                <div class="voter-names champion">Fredda, Kalle</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names hater">Peppe</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ Slide 7: #2 — Testament ═══════ -->
+<div class="slide" id="slide-7" data-intensity="8">
+    <div class="result-card">
+        <div class="dramatic-headline" style="color:#00e5ff;">COSMIC ASCENT</div>
+        <div class="dramatic-sub">Second Place</div>
+        <div class="band-name" style="color:#33eeff;">Testament</div>
+        <div class="song-name">"Nature of the Beast"</div>
+        <div class="cosmic-divider">&#10022; &#10023; &#10022;</div>
+        <div class="points-display" style="color:#00e5ff;" data-points="56">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-final">Direct to Final</div>
+        <div class="commentary">Fezz unleashed the beast with 10 points, and not a single voter dared give 1. ZERO haters &mdash; a feat shared only with Year of the Goat (still too soon). 56 points of pure thrash power propels Testament directly to the Final, untouched by contempt.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champion (10p)</div>
+                <div class="voter-names champion" style="color:#00e5ff; text-shadow:0 0 8px rgba(0,229,255,0.5);">Fezz</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names" style="color:#334455;">None</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ Slide 8: #1 — Kreator (Winner) ═══════ -->
+<div class="slide" id="slide-8" data-intensity="9">
+    <div class="result-card winner">
+        <div class="dramatic-headline">SUPERNOVA</div>
+        <div class="dramatic-sub" style="color:#c9a84c; letter-spacing:0.6em;">Heat 4 Champion</div>
+        <div class="band-name">Kreator</div>
+        <div class="song-name">"Krushers of the World"</div>
+        <div class="cosmic-divider">&#10022; &#9733; &#10023; &#9733; &#10022;</div>
+        <div class="points-display" data-points="63">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-final">Heat 4 Winner &bull; Direct to Final</div>
+        <div class="commentary">TWO champions &mdash; Peppe and Solj&auml;garen &mdash; detonated the Kreator bomb. 63 points &mdash; the highest score in Heat 4 by a commanding 7-point margin. Zero haters. The Krushers didn't just win &mdash; they obliterated the competition. A supernova that outshone every star in the constellation. Direct to the Final, and may the galaxy tremble.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champions (10p)</div>
+                <div class="voter-names champion">Peppe, Solj&auml;garen</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names" style="color:#334455;">None</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ Slide 9: Summary ═══════ -->
+<div class="slide" id="slide-9" data-intensity="5">
+    <div class="result-card">
+        <div class="summary-heading">Heat 4 &mdash; Final Standings</div>
+        <table class="summary-table">
+            <tr><th>#</th><th>Song</th><th>Pts</th><th>10p</th><th>Destination</th></tr>
+            <tr class="final-row"><td>1</td><td>Krushers of the World / Kreator</td><td>63</td><td>2</td><td>FINAL</td></tr>
+            <tr class="final-row"><td>2</td><td>Nature of the Beast / Testament</td><td>56</td><td>1</td><td>FINAL</td></tr>
+            <tr class="sc-row"><td>3</td><td>Don't Let Me Bring You Down / Hellacopters</td><td>52</td><td>2</td><td>ANDRA CHANSEN</td></tr>
+            <tr class="sc-row"><td>4</td><td>Of the Battles / Venemous</td><td>46</td><td>1</td><td>ANDRA CHANSEN</td></tr>
+            <tr class="elim-row"><td>5</td><td>Alucarda / Year of the Goat</td><td>44</td><td>1</td><td>Eliminated</td></tr>
+            <tr class="elim-row"><td>6</td><td>Captain Goat / Avatar</td><td>42</td><td>2</td><td>Eliminated</td></tr>
+            <tr class="elim-row"><td>7</td><td>Mot Babylon / Offerblod</td><td>26</td><td>0</td><td>Eliminated</td></tr>
+            <tr class="elim-row"><td>8</td><td>Heathen / Deafheaven</td><td>22</td><td>0</td><td>Eliminated</td></tr>
+        </table>
+        <div class="commentary" style="margin-top:1.5rem;">
+            Kreator dominated Heat 4 with 63 points and two champions &mdash; the undisputed supernova.
+            Testament secured second with universal respect &mdash; zero haters.
+            Year of the Goat's elimination by just 2 points remains the tragedy of the evening.
+            Deafheaven's 22 points earned them the dubious honor of the lowest score in the heat.
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14/dist/TextPlugin.min.js"></script>
+<script>
+    gsap.registerPlugin(TextPlugin);
+
+    // ═══ CONFIGURATION ═══
+    var totalSlides = 10;
+    var currentSlide = 0;
+    var activeTimeline = null;
+    var glowTween = null;
+    var GLYPHS = '\u039E\u03A8\u03A9\u03A6\u03A3\u03A0\u0394\u0398\u039B\u03BE\u03C8\u03C9\u03C6\u03C3\u03C0\u03B4\u03B8\u03BB\u2734\u2733\u2721\u2605\u2606\u25C7\u25C8\u2736';
+
+    // ═══ SPLIT TEXT INTO PER-CHARACTER SPANS ═══
+    function splitChars(el) {
+        var text = el.textContent;
+        if (!el.dataset.originalText) el.dataset.originalText = text;
+        el.innerHTML = '';
+        for (var i = 0; i < text.length; i++) {
+            var span = document.createElement('span');
+            span.className = 'char';
+            span.textContent = text[i] === ' ' ? '\u00A0' : text[i];
+            el.appendChild(span);
+        }
+        return el.querySelectorAll('.char');
+    }
+
+    function restoreText(el) {
+        if (el && el.dataset.originalText) el.textContent = el.dataset.originalText;
+    }
+
+    // ═══ STARFIELD ═══
+    function createStarfield() {
+        for (var i = 0; i < 80; i++) {
+            var s = document.createElement('div');
+            s.className = 'star';
+            var size = (0.5 + Math.random() * 2.5) + 'px';
+            s.style.width = size; s.style.height = size;
+            s.style.left = Math.random() * 100 + '%';
+            s.style.animationDuration = (12 + Math.random() * 20) + 's';
+            s.style.animationDelay = Math.random() * 20 + 's';
+            s.style.setProperty('--drift', ((Math.random() - 0.5) * 40) + 'px');
+            s.style.setProperty('--star-opacity', 0.2 + Math.random() * 0.6);
+            if (Math.random() < 0.15) s.style.background = '#e040fb';
+            else if (Math.random() < 0.15) s.style.background = '#00e5ff';
+            if (Math.random() < 0.3) s.style.filter = 'blur(1px)';
+            if (parseFloat(size) > 2) {
+                s.style.boxShadow = '0 0 ' + (parseFloat(size) * 2) + 'px rgba(255,255,255,0.3)';
+            }
+            document.body.appendChild(s);
+        }
+    }
+
+    // ═══ PARTICLE BURST ═══
+    function particleBurst(count, color, cx, cy) {
+        for (var i = 0; i < count; i++) {
+            var p = document.createElement('div');
+            var size = 2 + Math.random() * 5;
+            Object.assign(p.style, {
+                position: 'fixed', width: size + 'px', height: size + 'px',
+                background: color, borderRadius: '50%',
+                left: cx + 'px', top: cy + 'px',
+                zIndex: '150', pointerEvents: 'none',
+                boxShadow: '0 0 ' + (size * 2) + 'px ' + color
+            });
+            document.body.appendChild(p);
+            var angle = (Math.PI * 2 / count) * i + (Math.random() - 0.5) * 0.8;
+            var dist = 60 + Math.random() * 200;
+            gsap.to(p, {
+                x: Math.cos(angle) * dist,
+                y: Math.sin(angle) * dist - Math.random() * 40,
+                opacity: 0, scale: 0,
+                duration: 0.6 + Math.random() * 0.8,
+                ease: 'power2.out',
+                onComplete: function() { this.targets()[0].remove(); }
+            });
+        }
+    }
+
+    // ═══ GOLD CASCADE ═══
+    function goldCascade() {
+        var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+        for (var i = 0; i < 60; i++) {
+            var p = document.createElement('div');
+            var size = 3 + Math.random() * 8;
+            var hue = 40 + Math.random() * 20;
+            Object.assign(p.style, {
+                position: 'fixed', width: size + 'px', height: size + 'px',
+                background: 'hsl(' + hue + ',100%,' + (60 + Math.random() * 30) + '%)',
+                borderRadius: '50%', left: cx + 'px', top: cy + 'px',
+                zIndex: '150', pointerEvents: 'none',
+                boxShadow: '0 0 ' + (size * 3) + 'px rgba(255,215,0,0.7)'
+            });
+            document.body.appendChild(p);
+            gsap.to(p, {
+                x: (Math.random() - 0.5) * window.innerWidth,
+                y: (Math.random() - 0.5) * window.innerHeight,
+                rotation: gsap.utils.random(-360, 360),
+                opacity: 0, scale: 0,
+                duration: 1.5 + Math.random() * 2,
+                delay: Math.random() * 0.5,
+                ease: 'power2.out',
+                onComplete: function() { this.targets()[0].remove(); }
+            });
+        }
+    }
+
+    // ═══ MOURNING TEARS — violet particles rain down ═══
+    function mourningTears() {
+        for (var i = 0; i < 40; i++) {
+            var p = document.createElement('div');
+            var size = 2 + Math.random() * 4;
+            Object.assign(p.style, {
+                position: 'fixed', width: size + 'px', height: size + 'px',
+                background: '#9c27b0', borderRadius: '50%',
+                left: (Math.random() * window.innerWidth) + 'px',
+                top: '-20px',
+                zIndex: '150', pointerEvents: 'none',
+                boxShadow: '0 0 ' + (size * 2) + 'px rgba(156,39,176,0.7)'
+            });
+            document.body.appendChild(p);
+            gsap.to(p, {
+                y: window.innerHeight + 40,
+                x: (Math.random() - 0.5) * 100,
+                opacity: 0,
+                duration: 2 + Math.random() * 3,
+                delay: Math.random() * 2,
+                ease: 'power1.in',
+                onComplete: function() { this.targets()[0].remove(); }
+            });
+        }
+    }
+
+    // ═══ GLYPH SCRAMBLE — band name decodes from cosmic symbols ═══
+    function glyphScramble(el, tl, duration, position) {
+        var finalText = el.dataset.originalText || el.textContent;
+        if (!el.dataset.originalText) el.dataset.originalText = finalText;
+        var chars = finalText.split('');
+        el.textContent = chars.map(function(c) {
+            return c === ' ' ? ' ' : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+        }).join('');
+        gsap.set(el, { opacity: 1 });
+        var obj = { progress: 0 };
+        tl.to(obj, {
+            progress: 1, duration: duration, ease: 'power1.in',
+            onUpdate: function() {
+                var resolved = Math.floor(obj.progress * chars.length);
+                var display = '';
+                for (var i = 0; i < chars.length; i++) {
+                    if (i < resolved) display += chars[i];
+                    else if (chars[i] === ' ') display += ' ';
+                    else display += GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+                }
+                el.textContent = display;
+            }
+        }, position);
+    }
+
+    // ═══ SCREEN EFFECTS ═══
+    function flashScreen(intensity) {
+        var el = document.getElementById('flash');
+        var brightness = Math.min(0.15 + intensity * 0.06, 0.8);
+        var r = Math.min(160 + intensity * 10, 230);
+        var g = Math.min(40 + intensity * 5, 100);
+        var b = Math.min(200 + intensity * 8, 255);
+        el.style.background = 'rgba(' + r + ',' + g + ',' + b + ',' + brightness + ')';
+        gsap.fromTo(el, { opacity: 1 }, { opacity: 0, duration: 0.12 + intensity * 0.02, ease: 'power2.out' });
+    }
+
+    function screenShake(intensity) {
+        var mag = Math.min(intensity * 2, 16);
+        var steps = 4 + Math.floor(intensity);
+        var shakeTl = gsap.timeline();
+        for (var i = 0; i < steps; i++) {
+            shakeTl.to(document.body, {
+                x: (Math.random() - 0.5) * mag * 2,
+                y: (Math.random() - 0.5) * mag,
+                duration: 0.04, ease: 'none'
+            });
+        }
+        shakeTl.to(document.body, { x: 0, y: 0, duration: 0.1, ease: 'power2.out' });
+    }
+
+    function impactDistortion(intensity) {
+        var m = 0.005 + intensity * 0.003;
+        gsap.fromTo(document.body,
+            { scaleX: 1 + m, scaleY: 1 - m * 0.5 },
+            { scaleX: 1, scaleY: 1, duration: 0.4, ease: 'elastic.out(1, 0.3)' });
+    }
+
+    // ═══ SLIDE STATE MANAGEMENT ═══
+    function prepareSlideForAnimation(slideEl) {
+        var els = slideEl.querySelectorAll('.dramatic-headline, .dramatic-sub, .band-name, .song-name, .cosmic-divider, .points-display, .points-label, .commentary, .voter-info, .summary-heading, .summary-table, .mourning-note');
+        gsap.set(els, { opacity: 0, clearProps: 'transform,filter,scale' });
+        restoreText(slideEl.querySelector('.dramatic-headline'));
+        restoreText(slideEl.querySelector('.band-name'));
+        restoreText(slideEl.querySelector('.summary-heading'));
+        var commentary = slideEl.querySelector('.commentary');
+        if (commentary && !commentary.dataset.originalText) commentary.dataset.originalText = commentary.textContent;
+        var dest = slideEl.querySelector('.destination');
+        if (dest) gsap.set(dest, { opacity: 0, scale: 0, clearProps: 'boxShadow' });
+        var pd = slideEl.querySelector('.points-display');
+        if (pd) pd.textContent = '0';
+        gsap.set(slideEl.querySelectorAll('.voter-group'), { opacity: 0 });
+        var mn = slideEl.querySelector('.mourning-note');
+        if (mn) mn.classList.remove('visible');
+    }
+
+    function resetSlideToFinalState(slideEl) {
+        var els = slideEl.querySelectorAll('.dramatic-headline, .dramatic-sub, .band-name, .song-name, .cosmic-divider, .points-display, .points-label, .commentary, .voter-info, .summary-heading, .summary-table, .mourning-note');
+        gsap.set(els, { opacity: 1, clearProps: 'transform,filter,scale' });
+        restoreText(slideEl.querySelector('.dramatic-headline'));
+        restoreText(slideEl.querySelector('.band-name'));
+        restoreText(slideEl.querySelector('.summary-heading'));
+        var commentary = slideEl.querySelector('.commentary');
+        if (commentary && commentary.dataset.originalText) commentary.textContent = commentary.dataset.originalText;
+        var dest = slideEl.querySelector('.destination');
+        if (dest) gsap.set(dest, { opacity: 1, scale: 1, clearProps: 'boxShadow' });
+        var pd = slideEl.querySelector('.points-display');
+        if (pd) pd.textContent = pd.dataset.points;
+        gsap.set(slideEl.querySelectorAll('.voter-group'), { opacity: 1, clearProps: 'transform' });
+        var mn = slideEl.querySelector('.mourning-note');
+        if (mn) mn.classList.add('visible');
+    }
+
+    // ═══ CARD TIMELINE ═══
+    function buildCardTimeline(slideEl, intensity) {
+        var tl = gsap.timeline();
+        var card = slideEl.querySelector('.result-card');
+        if (!card) return tl;
+
+        var headline = card.querySelector('.dramatic-headline');
+        var sub = card.querySelector('.dramatic-sub');
+        var bandName = card.querySelector('.band-name');
+        var songName = card.querySelector('.song-name');
+        var divider = card.querySelector('.cosmic-divider');
+        var pointsDisplay = card.querySelector('.points-display');
+        var pointsLabel = card.querySelector('.points-label');
+        var destination = card.querySelector('.destination');
+        var commentary = card.querySelector('.commentary');
+        var voterInfo = card.querySelector('.voter-info');
+        var isWinner = card.classList.contains('winner');
+        var isMourning = card.classList.contains('mourning');
+        var isFinal = destination ? destination.classList.contains('dest-final') : false;
+
+        // ── HEADLINE ──
+        if (headline) {
+            if (intensity <= 2) {
+                tl.fromTo(headline, { y: 30, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' });
+            } else if (intensity <= 5) {
+                var chars = splitChars(headline);
+                gsap.set(headline, { opacity: 1 });
+                tl.fromTo(chars,
+                    { opacity: 0, y: 50, scale: 0.3, rotation: gsap.utils.random(-25, 25, 1, true) },
+                    { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.5,
+                      stagger: { each: 0.03, from: 'start' }, ease: 'back.out(1.7)' });
+            } else if (intensity <= 7) {
+                var chars = splitChars(headline);
+                gsap.set(headline, { opacity: 1 });
+                tl.fromTo(chars,
+                    { opacity: 0, y: gsap.utils.random(-120, -60, 1, true),
+                      rotation: gsap.utils.random(-40, 40, 1, true), scale: 1.5 },
+                    { opacity: 1, y: 0, rotation: 0, scale: 1, duration: 0.45,
+                      stagger: { each: 0.025, from: 'center' }, ease: 'power4.out' });
+                tl.add(function() {
+                    var r = headline.getBoundingClientRect();
+                    particleBurst(15 + intensity * 2, isMourning ? '#9c27b0' : '#7c4dff',
+                        r.left + r.width / 2, r.top + r.height / 2);
+                }, '-=0.1');
+            } else {
+                var chars = splitChars(headline);
+                gsap.set(headline, { opacity: 1 });
+                tl.fromTo(chars,
+                    { opacity: 0, scale: 3, filter: 'blur(8px)',
+                      x: gsap.utils.random(-80, 80, 1, true),
+                      y: gsap.utils.random(-60, 60, 1, true) },
+                    { opacity: 1, scale: 1, filter: 'blur(0px)', x: 0, y: 0, duration: 0.6,
+                      stagger: { each: 0.025, from: 'random' }, ease: 'expo.out' });
+                tl.add(function() { impactDistortion(intensity); }, '-=0.4');
+                tl.add(function() {
+                    var r = headline.getBoundingClientRect();
+                    particleBurst(30 + intensity * 3, isWinner ? '#ffd700' : '#e040fb',
+                        r.left + r.width / 2, r.top + r.height / 2);
+                }, '-=0.2');
+            }
+        }
+
+        // ── SUB HEADLINE ──
+        if (sub) {
+            tl.fromTo(sub, { opacity: 0, y: 10, letterSpacing: '0.8em' },
+                { opacity: 1, y: 0, letterSpacing: '0.4em', duration: 0.5, ease: 'power2.out' }, '-=0.2');
+        }
+
+        // ── BAND NAME: glyph scramble decode ──
+        if (bandName) {
+            if (!bandName.dataset.originalText) bandName.dataset.originalText = bandName.textContent;
+            if (intensity <= 2) {
+                tl.fromTo(bandName, { opacity: 0, scale: 0.9 },
+                    { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out' }, '-=0.1');
+            } else {
+                var scrambleDur = Math.max(0.6, 1.6 - intensity * 0.1);
+                if (intensity >= 6) {
+                    gsap.set(bandName, { scale: 0.5 });
+                    tl.to(bandName, { scale: 1, duration: scrambleDur * 0.6, ease: 'back.out(1.7)' }, '-=0.1');
+                    glyphScramble(bandName, tl, scrambleDur, '<');
+                } else {
+                    glyphScramble(bandName, tl, scrambleDur, '-=0.1');
+                }
+            }
+        }
+
+        // ── SONG NAME ──
+        if (songName) {
+            tl.fromTo(songName, { opacity: 0, y: 5 },
+                { opacity: 1, y: 0, duration: 0.4, ease: 'power1.out' }, '-=0.3');
+        }
+
+        // ── COSMIC DIVIDER ──
+        if (divider) {
+            tl.fromTo(divider, { scaleX: 0, opacity: 0 },
+                { scaleX: 1, opacity: 1, duration: 0.4, ease: 'power2.inOut' }, '-=0.1');
+        }
+
+        // ── POINTS COUNTER ──
+        if (pointsDisplay) {
+            var target = parseInt(pointsDisplay.dataset.points) || 0;
+            var ptObj = { val: 0 };
+            var countDur = Math.max(0.5, 1.4 - intensity * 0.08);
+            tl.fromTo(pointsDisplay, { opacity: 0, scale: 0.5 },
+                { opacity: 1, scale: 1, duration: 0.3, ease: 'power2.out' }, '-=0.1');
+            tl.to(ptObj, {
+                val: target, duration: countDur,
+                snap: { val: 1 }, ease: 'power2.out',
+                onUpdate: function() { pointsDisplay.textContent = Math.round(ptObj.val); }
+            }, '<');
+            if (intensity >= 4) {
+                tl.to(pointsDisplay, {
+                    keyframes: [
+                        { scale: 1.2, duration: 0.1, ease: 'power2.out' },
+                        { scale: 0.95, duration: 0.08, ease: 'power2.in' },
+                        { scale: 1, duration: 0.12, ease: 'power1.out' }
+                    ]
+                });
+            }
+        }
+
+        // ── POINTS LABEL ──
+        if (pointsLabel) {
+            tl.fromTo(pointsLabel, { opacity: 0 }, { opacity: 1, duration: 0.3 }, '-=0.6');
+        }
+
+        // ── DESTINATION ──
+        if (destination) {
+            var isSC = destination.classList.contains('dest-secondchance');
+            var destDelay = isFinal ? 1.0 : isSC ? 0.6 : 0.3;
+
+            if (isFinal && isWinner) {
+                tl.to(destination, {
+                    keyframes: [
+                        { opacity: 1, scale: 2.2, duration: 0.2, ease: 'power4.out' },
+                        { scale: 0.8, duration: 0.1, ease: 'power2.in' },
+                        { scale: 1.2, duration: 0.1, ease: 'power2.out' },
+                        { scale: 0.95, duration: 0.08, ease: 'power2.in' },
+                        { scale: 1, duration: 0.15, ease: 'elastic.out(1, 0.5)' }
+                    ],
+                    delay: destDelay,
+                    onStart: function() { flashScreen(9); screenShake(9); goldCascade(); },
+                    onComplete: function() {
+                        glowTween = gsap.to(destination, {
+                            boxShadow: '0 0 60px rgba(255,215,0,0.6), 0 0 120px rgba(255,215,0,0.2)',
+                            duration: 1.5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+                        });
+                    }
+                });
+            } else if (isFinal) {
+                tl.to(destination, {
+                    keyframes: [
+                        { opacity: 1, scale: 2.0, duration: 0.2, ease: 'power4.out' },
+                        { scale: 0.75, duration: 0.1, ease: 'power2.in' },
+                        { scale: 1.3, duration: 0.12, ease: 'power3.out' },
+                        { scale: 0.9, duration: 0.08, ease: 'power2.in' },
+                        { scale: 1.05, duration: 0.1, ease: 'power2.out' },
+                        { scale: 1, duration: 0.15, ease: 'elastic.out(1, 0.6)' }
+                    ],
+                    delay: destDelay,
+                    onStart: function() {
+                        flashScreen(8); screenShake(7); impactDistortion(6);
+                        var r = destination.getBoundingClientRect();
+                        particleBurst(40, '#00e5ff', r.left + r.width / 2, r.top + r.height / 2);
+                        setTimeout(function() {
+                            particleBurst(25, '#e040fb', r.left + r.width / 2, r.top + r.height / 2);
+                        }, 250);
+                        setTimeout(function() { flashScreen(5); }, 350);
+                    },
+                    onComplete: function() {
+                        glowTween = gsap.to(destination, {
+                            boxShadow: '0 0 50px rgba(0,229,255,0.5), 0 0 100px rgba(0,229,255,0.2)',
+                            duration: 1.5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+                        });
+                    }
+                });
+            } else if (isSC) {
+                tl.to(destination, {
+                    keyframes: [
+                        { opacity: 1, scale: 1.3, rotation: -2, duration: 0.2, ease: 'power3.out' },
+                        { scale: 0.95, rotation: 1, duration: 0.12, ease: 'power2.in' },
+                        { scale: 1, rotation: 0, duration: 0.18, ease: 'power1.out' }
+                    ],
+                    delay: destDelay
+                });
+            } else if (isMourning) {
+                tl.to(destination, {
+                    keyframes: [
+                        { opacity: 1, scale: 2.5, duration: 0.2, ease: 'power4.out' },
+                        { scale: 0.6, duration: 0.12, ease: 'power3.in' },
+                        { scale: 1.3, duration: 0.1, ease: 'power3.out' },
+                        { scale: 0.9, duration: 0.08, ease: 'power2.in' },
+                        { scale: 1, duration: 0.2, ease: 'elastic.out(1, 0.5)' }
+                    ],
+                    delay: 0.6,
+                    onStart: function() {
+                        flashScreen(7); screenShake(6); impactDistortion(5);
+                        mourningTears();
+                        var r = destination.getBoundingClientRect();
+                        particleBurst(20, '#9c27b0', r.left + r.width / 2, r.top + r.height / 2);
+                    }
+                });
+                var mourningNote = card.querySelector('.mourning-note');
+                if (mourningNote) {
+                    tl.fromTo(mourningNote, { opacity: 0, y: 15 },
+                        { opacity: 1, y: 0, duration: 0.8, ease: 'power1.out',
+                          onComplete: function() { mourningNote.classList.add('visible'); }
+                        }, '+=0.3');
+                }
+            } else {
+                tl.to(destination, {
+                    keyframes: [
+                        { opacity: 1, scale: 1.8, duration: 0.15, ease: 'power4.out' },
+                        { scale: 0.7, duration: 0.1, ease: 'power2.in' },
+                        { scale: 1.15, rotation: -1.5, duration: 0.1, ease: 'power2.out' },
+                        { scale: 0.95, rotation: 1, duration: 0.08, ease: 'power2.in' },
+                        { scale: 1, rotation: 0, duration: 0.15, ease: 'elastic.out(1, 0.5)' }
+                    ],
+                    delay: destDelay,
+                    onStart: function() {
+                        flashScreen(Math.max(intensity, 3));
+                        screenShake(Math.max(intensity, 2));
+                        var r = destination.getBoundingClientRect();
+                        particleBurst(12 + intensity * 2, '#8090a8', r.left + r.width / 2, r.top + r.height / 2);
+                    }
+                });
+            }
+        }
+
+        // ── COMMENTARY ──
+        if (commentary) {
+            if ((intensity >= 8 && (isWinner || isFinal)) || isMourning) {
+                var fullText = commentary.dataset.originalText || commentary.textContent;
+                if (!commentary.dataset.originalText) commentary.dataset.originalText = fullText;
+                commentary.textContent = '';
+                tl.set(commentary, { opacity: 1 }, '+=0.8');
+                tl.to(commentary, {
+                    duration: Math.min(fullText.length * 0.018, 6),
+                    text: { value: fullText, delimiter: '' },
+                    ease: 'none'
+                });
+            } else {
+                tl.fromTo(commentary, { opacity: 0, y: 15 },
+                    { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }, '+=0.6');
+            }
+        }
+
+        // ── VOTER INFO ──
+        if (voterInfo) {
+            var groups = voterInfo.querySelectorAll('.voter-group');
+            tl.fromTo(groups, { opacity: 0, y: 15 },
+                { opacity: 1, y: 0, duration: 0.4, stagger: 0.2, ease: 'power2.out' }, '-=0.2');
+        }
+
+        return tl;
+    }
+
+    // ═══ SUMMARY TIMELINE ═══
+    function buildSummaryTimeline(slideEl) {
+        var tl = gsap.timeline();
+        var heading = slideEl.querySelector('.summary-heading');
+        var table = slideEl.querySelector('.summary-table');
+        var commentary = slideEl.querySelector('.commentary');
+
+        if (heading) {
+            var chars = splitChars(heading);
+            gsap.set(heading, { opacity: 1 });
+            tl.fromTo(chars,
+                { opacity: 0, y: -20, scale: 0.5 },
+                { opacity: 1, y: 0, scale: 1, duration: 0.4,
+                  stagger: { each: 0.02, from: 'start' }, ease: 'back.out(1.5)' });
+        }
+
+        if (table) {
+            gsap.set(table, { opacity: 1 });
+            var headerCells = table.querySelectorAll('th');
+            var dataRows = table.querySelectorAll('tr:not(:first-child)');
+            tl.fromTo(headerCells, { opacity: 0, y: -10 },
+                { opacity: 1, y: 0, duration: 0.3, stagger: 0.04, ease: 'power2.out' }, '-=0.1');
+            tl.fromTo(dataRows, { opacity: 0, x: -40, scale: 0.97 },
+                { opacity: 1, x: 0, scale: 1, duration: 0.35,
+                  stagger: { each: 0.09, from: 'start' }, ease: 'back.out(1.2)' }, '-=0.1');
+        }
+
+        if (commentary) {
+            tl.fromTo(commentary, { opacity: 0 }, { opacity: 1, duration: 0.5 }, '-=0.1');
+        }
+        return tl;
+    }
+
+    // ═══ NAVIGATION ═══
+    function nextSlide() {
+        if (currentSlide >= totalSlides - 1) return;
+        if (activeTimeline) { activeTimeline.kill(); activeTimeline = null; }
+        if (glowTween) { glowTween.kill(); glowTween = null; }
+
+        var current = document.getElementById('slide-' + currentSlide);
+        gsap.to(current, { opacity: 0, duration: 0.4,
+            onComplete: function() { current.classList.remove('active'); } });
+
+        currentSlide++;
+        var next = document.getElementById('slide-' + currentSlide);
+        var intensity = parseInt(next.dataset.intensity) || 1;
+
+        flashScreen(intensity);
+        if (intensity >= 3) screenShake(intensity);
+        if (intensity >= 5) impactDistortion(intensity);
+
+        if (intensity >= 9) {
+            setTimeout(function() { flashScreen(8); }, 200);
+            setTimeout(function() {
+                var el = document.getElementById('flash');
+                el.style.background = 'rgba(255,215,0,0.5)';
+                gsap.fromTo(el, { opacity: 1 }, { opacity: 0, duration: 0.5, ease: 'power2.out' });
+            }, 500);
+            setTimeout(function() { flashScreen(6); }, 800);
+        } else if (intensity >= 8) {
+            setTimeout(function() { flashScreen(6); }, 250);
+            setTimeout(function() {
+                var el = document.getElementById('flash');
+                el.style.background = 'rgba(224,64,251,0.4)';
+                gsap.fromTo(el, { opacity: 1 }, { opacity: 0, duration: 0.4, ease: 'power2.out' });
+            }, 500);
+        }
+
+        prepareSlideForAnimation(next);
+        next.classList.add('active');
+        gsap.fromTo(next, { opacity: 0 }, { opacity: 1, duration: 0.5 });
+
+        var isSummary = next.querySelector('.summary-table');
+        activeTimeline = isSummary ? buildSummaryTimeline(next) : buildCardTimeline(next, intensity);
+        updateProgress();
+    }
+
+    function prevSlide() {
+        if (currentSlide <= 0) return;
+        if (activeTimeline) { activeTimeline.kill(); activeTimeline = null; }
+        if (glowTween) { glowTween.kill(); glowTween = null; }
+
+        var current = document.getElementById('slide-' + currentSlide);
+        gsap.to(current, { opacity: 0, duration: 0.3 });
+        current.classList.remove('active');
+        restoreText(current.querySelector('.dramatic-headline'));
+        restoreText(current.querySelector('.band-name'));
+        var dest = current.querySelector('.destination');
+        if (dest) gsap.set(dest, { opacity: 0, scale: 0, clearProps: 'boxShadow' });
+
+        currentSlide--;
+        var prev = document.getElementById('slide-' + currentSlide);
+        resetSlideToFinalState(prev);
+        prev.classList.add('active');
+        gsap.to(prev, { opacity: 1, duration: 0.3 });
+        updateProgress();
+    }
+
+    function updateProgress() {
+        document.getElementById('progress').style.width =
+            (currentSlide / (totalSlides - 1)) * 100 + '%';
+    }
+
+    // ═══ EVENT LISTENERS ═══
+    document.addEventListener('click', nextSlide);
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'Backspace') {
+            e.preventDefault(); prevSlide();
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault(); nextSlide();
+        }
+    });
+
+    // ═══ INIT ═══
+    createStarfield();
+    updateProgress();
+
+    (function() {
+        var s0 = document.getElementById('slide-0');
+        var titleMain = s0.querySelector('.title-main');
+        var titleSub = s0.querySelector('.title-sub');
+        var titleHeat = s0.querySelector('.title-heat');
+        var titleGlyphs = s0.querySelector('.title-glyphs');
+        gsap.set([titleMain, titleSub, titleHeat, titleGlyphs], { opacity: 0 });
+
+        var tl = gsap.timeline({ delay: 0.3 });
+
+        var chars = splitChars(titleMain);
+        gsap.set(titleMain, { opacity: 1 });
+        tl.fromTo(chars,
+            { opacity: 0,
+              y: gsap.utils.random(-120, 120, 1, true),
+              x: gsap.utils.random(-60, 60, 1, true),
+              rotation: gsap.utils.random(-45, 45, 1, true),
+              scale: 0 },
+            { opacity: 1, y: 0, x: 0, rotation: 0, scale: 1,
+              duration: 0.8, stagger: { each: 0.05, from: 'random' }, ease: 'back.out(1.5)' });
+
+        tl.fromTo(titleSub, { opacity: 0, filter: 'blur(12px)' },
+            { opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'power2.out' }, '-=0.3');
+
+        tl.fromTo(titleHeat, { opacity: 0, y: 40, scale: 0.8 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'back.out(1.7)' }, '-=0.2');
+
+        if (titleGlyphs) {
+            var glyphText = titleGlyphs.textContent.trim().split(/\s+/);
+            titleGlyphs.textContent = '';
+            glyphText.forEach(function(g) {
+                var span = document.createElement('span');
+                span.className = 'char';
+                span.textContent = g;
+                span.style.marginRight = '0.5em';
+                titleGlyphs.appendChild(span);
+            });
+            var glyphSpans = titleGlyphs.querySelectorAll('.char');
+            gsap.set(titleGlyphs, { opacity: 1 });
+            tl.fromTo(glyphSpans,
+                { opacity: 0, scale: 0, rotation: -180 },
+                { opacity: 0.5, scale: 1, rotation: 0, duration: 0.5,
+                  stagger: { each: 0.08, from: 'center' }, ease: 'back.out(2.5)' }, '-=0.2');
+        }
+    })();
+</script>
+
+</body>
+</html>
