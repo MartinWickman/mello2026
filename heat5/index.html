@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MELLO 2026 - Andra Chansen Results</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Oswald:wght@400;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { overflow-x: hidden; }
+
+        body {
+            background: #120812;
+            color: #f0d0e0;
+            font-family: 'Oswald', sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+            min-height: 100vh;
+            width: 100vw;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* ── GLAM BACKGROUND ── */
+        .bg-glam {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(255, 105, 180, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 15%, rgba(255, 20, 147, 0.06) 0%, transparent 45%),
+                radial-gradient(ellipse at 50% 70%, rgba(219, 112, 147, 0.05) 0%, transparent 40%),
+                radial-gradient(ellipse at 80% 80%, rgba(255, 182, 193, 0.04) 0%, transparent 40%);
+            z-index: 1;
+            pointer-events: none;
+            filter: blur(30px);
+            animation: glam-shift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes glam-shift {
+            0% { transform: translateY(0) scaleY(1); opacity: 0.6; filter: blur(30px) hue-rotate(0deg); }
+            50% { transform: translateY(-3%) scaleY(1.1); opacity: 0.9; filter: blur(35px) hue-rotate(15deg); }
+            100% { transform: translateY(2%) scaleY(0.95); opacity: 0.7; filter: blur(30px) hue-rotate(-10deg); }
+        }
+
+        /* ── GLAM BASE GLOW ── */
+        .glam-base {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 25%;
+            background:
+                radial-gradient(ellipse at 30% 100%, rgba(255, 105, 180, 0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 70% 100%, rgba(255, 20, 147, 0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 100%, rgba(255, 182, 193, 0.03) 0%, transparent 50%);
+            z-index: 1;
+            pointer-events: none;
+            animation: glam-pulse 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes glam-pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.6; }
+        }
+
+        /* ── BUBBLES ── */
+        .bubble {
+            position: fixed;
+            border-radius: 50%;
+            z-index: 15;
+            pointer-events: none;
+            opacity: 0;
+            background: radial-gradient(circle at 30% 30%,
+                rgba(255, 255, 255, 0.15),
+                rgba(255, 105, 180, 0.05) 50%,
+                transparent 70%);
+            border: 1px solid rgba(255, 182, 193, 0.15);
+            animation: bubble-rise linear infinite;
+        }
+
+        .bubble::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 20%;
+            width: 30%;
+            height: 20%;
+            border-radius: 50%;
+            background: radial-gradient(ellipse,
+                rgba(255, 255, 255, 0.35),
+                transparent);
+            transform: rotate(-30deg);
+        }
+
+        @keyframes bubble-rise {
+            0% { opacity: 0; transform: translateY(105vh) translateX(0) scale(0.8); }
+            10% { opacity: var(--bubble-opacity, 0.4); }
+            50% { transform: translateY(50vh) translateX(var(--wobble, 20px)) scale(1); }
+            90% { opacity: var(--bubble-opacity, 0.3); }
+            100% { opacity: 0; transform: translateY(-10vh) translateX(calc(var(--wobble, 20px) * -1)) scale(1.1); }
+        }
+
+        /* ── SPARKLES ── */
+        .sparkle {
+            position: fixed;
+            z-index: 14;
+            pointer-events: none;
+            opacity: 0;
+            animation: sparkle-twinkle ease-in-out infinite;
+        }
+
+        .sparkle::before, .sparkle::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 200, 220, 0.8);
+        }
+
+        .sparkle::before {
+            width: 100%;
+            height: 1px;
+            top: 50%;
+            left: 0;
+        }
+
+        .sparkle::after {
+            width: 1px;
+            height: 100%;
+            left: 50%;
+            top: 0;
+        }
+
+        @keyframes sparkle-twinkle {
+            0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+            50% { opacity: 0.8; transform: scale(1) rotate(45deg); }
+        }
+
+        /* ── SLIDES ── */
+        .slide {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 1rem;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .slide.active { pointer-events: auto; }
+
+        /* ── TITLE SLIDE ── */
+        .title-main {
+            font-family: 'Playfair Display', serif;
+            font-size: 6rem;
+            font-weight: 900;
+            color: #ff69b4;
+            text-shadow:
+                0 0 20px rgba(255, 105, 180, 0.8),
+                0 0 40px rgba(255, 105, 180, 0.4),
+                0 0 80px rgba(255, 20, 147, 0.3),
+                3px 3px 0 #000;
+            letter-spacing: 0.1em;
+            animation: title-glam 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes title-glam {
+            0% { text-shadow: 0 0 20px rgba(255, 105, 180, 0.8), 0 0 40px rgba(255, 105, 180, 0.4), 3px 3px 0 #000; color: #ff69b4; }
+            50% { text-shadow: 0 0 30px rgba(255, 20, 147, 0.9), 0 0 60px rgba(255, 20, 147, 0.5), 0 0 100px rgba(255, 20, 147, 0.2), 3px 3px 0 #000; color: #ff1493; }
+            100% { text-shadow: 0 0 25px rgba(255, 105, 180, 0.9), 0 0 50px rgba(255, 105, 180, 0.5), 3px 3px 0 #000; color: #ff85c0; }
+        }
+
+        .title-sub {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            color: #c090a8;
+            text-transform: uppercase;
+            letter-spacing: 0.6em;
+            margin-top: 1rem;
+        }
+
+        .title-heat {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ff1493;
+            text-shadow: 0 0 15px rgba(255, 20, 147, 0.5);
+            margin-top: 2rem;
+        }
+
+        .title-glyphs {
+            font-size: 1.6rem;
+            color: #ff69b4;
+            letter-spacing: 0.8em;
+            margin-top: 1.5rem;
+            opacity: 0.5;
+            text-shadow: 0 0 8px rgba(255, 105, 180, 0.4);
+        }
+
+        /* ── DRAMATIC HEADLINE ── */
+        .dramatic-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.3rem;
+            line-height: 1.1;
+        }
+
+        .dramatic-sub {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.3rem;
+            color: #c090a8;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            margin-bottom: 2rem;
+        }
+
+        /* ── RESULT CARD ── */
+        .result-card {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90vw;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+
+        /* ── GLAM DIVIDER ── */
+        .glam-divider {
+            display: flex;
+            align-items: center;
+            width: 200px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: #ff69b4;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+            letter-spacing: 0.4em;
+            white-space: nowrap;
+        }
+
+        .glam-divider::before,
+        .glam-divider::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff69b4, #ff1493);
+            box-shadow: 0 0 8px rgba(255, 105, 180, 0.4);
+        }
+
+        .glam-divider::after {
+            background: linear-gradient(90deg, #ff1493, #ff69b4, transparent);
+        }
+
+        .glam-divider::before { margin-right: 0.6rem; }
+        .glam-divider::after { margin-left: 0.6rem; }
+
+        /* ── BAND & SONG ── */
+        .band-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #ff69b4;
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.6), 2px 2px 0 #000;
+            margin-bottom: 0.3rem;
+            line-height: 1.15;
+        }
+
+        .song-name {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.6rem;
+            color: #c090a8;
+            font-style: italic;
+            margin-bottom: 0.8rem;
+        }
+
+        /* ── POINTS DISPLAY ── */
+        .points-display {
+            font-family: 'Playfair Display', serif;
+            font-size: 5.5rem;
+            font-weight: 900;
+            color: #ff69b4;
+            text-shadow:
+                0 0 20px rgba(255, 105, 180, 0.6),
+                0 0 40px rgba(255, 105, 180, 0.3);
+            line-height: 1;
+            letter-spacing: 0.05em;
+        }
+
+        .points-label {
+            font-size: 0.9rem;
+            color: #806878;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            margin-bottom: 1rem;
+        }
+
+        /* ── DESTINATION BADGES ── */
+        .destination {
+            margin-top: 1rem;
+            padding: 0.5rem 2rem;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            border: 2px solid;
+            display: inline-block;
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        .dest-eliminated {
+            color: #a08090;
+            border-color: #605060;
+            background: rgba(60, 40, 50, 0.5);
+        }
+
+        .dest-final {
+            color: #ff69b4;
+            border-color: #ff69b4;
+            background: rgba(255, 105, 180, 0.08);
+        }
+
+        /* ── COMMENTARY ── */
+        .commentary {
+            margin-top: 1.2rem;
+            font-size: 1.1rem;
+            color: #bb99aa;
+            font-style: italic;
+            max-width: 550px;
+            line-height: 1.6;
+        }
+
+        /* ── VOTER INFO ── */
+        .voter-info {
+            margin-top: 1.2rem;
+            display: flex;
+            gap: 3rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .voter-group { text-align: center; }
+
+        .voter-label {
+            font-size: 0.8rem;
+            color: #806878;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 0.3rem;
+        }
+
+        .voter-names { font-size: 1.1rem; color: #d0b8c8; }
+        .voter-names.champion { color: #ff69b4; text-shadow: 0 0 8px rgba(255, 105, 180, 0.4); }
+        .voter-names.hater { color: #ff5566; }
+
+        /* ── WINNER OVERRIDES ── */
+        .winner .dramatic-headline {
+            font-size: 5.5rem;
+            color: #ffd700;
+            text-shadow:
+                0 0 30px rgba(255, 215, 0, 0.8),
+                0 0 60px rgba(255, 215, 0, 0.4),
+                0 0 120px rgba(255, 180, 0, 0.2),
+                3px 3px 0 #000;
+            animation: winner-glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes winner-glow {
+            from { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4), 3px 3px 0 #000; }
+            to { text-shadow: 0 0 50px rgba(255, 215, 0, 1), 0 0 100px rgba(255, 215, 0, 0.6), 0 0 150px rgba(255, 180, 0, 0.3), 3px 3px 0 #000; }
+        }
+
+        .winner .band-name {
+            font-size: 4.5rem;
+            color: #ffd700;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4), 3px 3px 0 #000;
+        }
+
+        .winner .points-display {
+            font-size: 7rem;
+            color: #ffd700;
+            text-shadow:
+                0 0 30px rgba(255, 215, 0, 0.8),
+                0 0 60px rgba(255, 215, 0, 0.4),
+                0 0 100px rgba(255, 180, 0, 0.2);
+        }
+
+        .winner .glam-divider {
+            width: 300px;
+            color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+
+        .winner .glam-divider::before {
+            background: linear-gradient(90deg, transparent, #ffd700, #fff);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .winner .glam-divider::after {
+            background: linear-gradient(90deg, #fff, #ffd700, transparent);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .winner .dest-final {
+            color: #ffd700;
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .winner .voter-names.champion { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+
+        /* ── HEARTBREAK OVERRIDES ── */
+        .heartbreak .dramatic-headline {
+            color: #ff1493 !important;
+            text-shadow: 0 0 20px rgba(255, 20, 147, 0.8), 0 0 40px rgba(255, 20, 147, 0.4), 3px 3px 0 #000 !important;
+        }
+
+        .heartbreak .band-name {
+            color: #ff69b4 !important;
+            text-shadow: 0 0 25px rgba(255, 105, 180, 0.7), 2px 2px 0 #000 !important;
+        }
+
+        .heartbreak .points-display {
+            color: #ff1493 !important;
+            text-shadow: 0 0 20px rgba(255, 20, 147, 0.6), 0 0 40px rgba(255, 20, 147, 0.3) !important;
+        }
+
+        .heartbreak .dest-eliminated {
+            color: #ff3366;
+            border-color: #ff3366;
+            background: rgba(255, 51, 102, 0.1);
+        }
+
+        .heartbreak .commentary {
+            color: #dd99bb;
+            max-width: 600px;
+        }
+
+        .heartbreak-note {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff3366;
+            text-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
+            margin-top: 0.5rem;
+            opacity: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            animation: heartbreak-pulse 2s ease-in-out infinite alternate paused;
+        }
+
+        .heartbreak-note.visible {
+            animation-play-state: running;
+        }
+
+        @keyframes heartbreak-pulse {
+            from { text-shadow: 0 0 15px rgba(255, 51, 102, 0.5); }
+            to { text-shadow: 0 0 30px rgba(255, 51, 102, 0.9), 0 0 60px rgba(255, 51, 102, 0.3); }
+        }
+
+        /* ── FLASH OVERLAY ── */
+        .flash-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ── PROGRESS BAR ── */
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff1493, #ff69b4, #ffb6c1);
+            z-index: 100;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+        }
+
+        /* ── SUMMARY TABLE ── */
+        .summary-table {
+            border-collapse: collapse;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+        }
+
+        .summary-table th {
+            color: #ff69b4;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.6rem 1.2rem;
+            border-bottom: 2px solid #2a1520;
+            font-weight: 700;
+        }
+
+        .summary-table td {
+            padding: 0.5rem 1.2rem;
+            border-bottom: 1px solid #1a0d14;
+            text-align: center;
+        }
+
+        .summary-table td:nth-child(2) { text-align: left; }
+        .summary-table tr.final-row td { color: #ff69b4; }
+        .summary-table tr.elim-row td { color: #605060; }
+
+        .summary-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: #ff69b4;
+            text-shadow: 0 0 15px rgba(255, 105, 180, 0.4);
+            margin-bottom: 2rem;
+        }
+
+        /* ── CHARACTER SPANS ── */
+        .char { display: inline-block; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            .title-main { font-size: 3.5rem; }
+            .title-sub { font-size: 1.1rem; letter-spacing: 0.3em; }
+            .title-heat { font-size: 1.8rem; }
+            .title-glyphs { font-size: 1.1rem; }
+            .dramatic-headline { font-size: 2.8rem; }
+            .dramatic-sub { font-size: 1rem; }
+            .band-name { font-size: 2.2rem; }
+            .song-name { font-size: 1.2rem; }
+            .points-display { font-size: 3.5rem; }
+            .winner .dramatic-headline { font-size: 3.5rem; }
+            .winner .band-name { font-size: 2.8rem; }
+            .winner .points-display { font-size: 5rem; }
+            .destination { font-size: 1rem; padding: 0.4rem 1.5rem; }
+            .commentary { font-size: 0.95rem; max-width: 90vw; }
+            .voter-info { gap: 1.5rem; }
+            .summary-table { font-size: 0.85rem; }
+            .summary-table th, .summary-table td { padding: 0.4rem 0.5rem; }
+            .summary-heading { font-size: 2rem; }
+            .glam-divider { width: 120px; }
+            .heartbreak-note { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-glam"></div>
+<div class="glam-base"></div>
+<div class="flash-overlay" id="flash"></div>
+<div class="progress-bar" id="progress"></div>
+
+<!-- Slide 0: Title -->
+<div class="slide active" id="slide-0" style="opacity:1;">
+    <div class="title-main">MELLO 2026</div>
+    <div class="title-sub">Bubbles &amp; Glamour</div>
+    <div class="title-heat">Andra Chansen</div>
+    <div class="title-glyphs">&#9826; &#10047; &#9733; &#10047; &#9826;</div>
+</div>
+
+<!-- Slide 1: #8 — Atomik Train -->
+<div class="slide" id="slide-1" data-intensity="1">
+    <div class="result-card">
+        <div class="dramatic-headline" style="color:#605060;">POP!</div>
+        <div class="dramatic-sub">Eighth Place</div>
+        <div class="band-name" style="color:#706070;">Atomik Train</div>
+        <div class="song-name">&ldquo;Supersonik Speedway&rdquo;</div>
+        <div class="glam-divider">&#10047; &#9733; &#10047;</div>
+        <div class="points-display" style="color:#706070;" data-points="28">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-eliminated">Eliminated</div>
+        <div class="commentary">Dead last with 28 points. THREE voters &mdash; Wickman, Ola, and Fredda &mdash; pricked this bubble with their 1-point pins. Not a single champion believed in the Supersonik dream. The train pulled into the station for the final time. All bubbles burst.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champion (10p)</div>
+                <div class="voter-names" style="color:#504050;">None</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names hater">Wickman, Ola, Fredda</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 2: #7 — Lord of the Lost -->
+<div class="slide" id="slide-2" data-intensity="2">
+    <div class="result-card">
+        <div class="dramatic-headline" style="color:#706070;">LOST IN THE FIZZ</div>
+        <div class="dramatic-sub">Seventh Place</div>
+        <div class="band-name" style="color:#807080;">Lord of the Lost</div>
+        <div class="song-name">&ldquo;I&rsquo;m A Diamond&rdquo;</div>
+        <div class="glam-divider">&#10047; &#9733; &#10047;</div>
+        <div class="points-display" style="color:#807080;" data-points="34">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-eliminated">Eliminated</div>
+        <div class="commentary">A diamond needs pressure to shine, but Lord of the Lost found none. 34 points with zero champions and zero haters &mdash; the ultimate wallflower at the party. Nobody loved them, nobody hated them. They simply faded into the background. Perhaps the cruelest fate of all.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champion (10p)</div>
+                <div class="voter-names" style="color:#504050;">None</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names" style="color:#504050;">None</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 3: #6 — Venemous -->
+<div class="slide" id="slide-3" data-intensity="3">
+    <div class="result-card">
+        <div class="dramatic-headline" style="color:#807080;">FLAT CHAMPAGNE</div>
+        <div class="dramatic-sub">Sixth Place</div>
+        <div class="band-name" style="color:#908090;">Venemous</div>
+        <div class="song-name">&ldquo;Of the Battles&rdquo;</div>
+        <div class="glam-divider">&#10047; &#9733; &#10047;</div>
+        <div class="points-display" style="color:#908090;" data-points="37">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-eliminated">Eliminated</div>
+        <div class="commentary">From 4th place in Heat 4 to 6th here &mdash; the second chance turned into a second disappointment. Zero champions, and Tompa and Kalle both jabbed with 1-point thorns. The battles are now truly over for Venemous. The champagne went flat before the cork even popped.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champion (10p)</div>
+                <div class="voter-names" style="color:#504050;">None</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names hater">Tompa, Kalle</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 4: #5 — Megadeth -->
+<div class="slide" id="slide-4" data-intensity="5">
+    <div class="result-card">
+        <div class="dramatic-headline" style="color:#c06090;">BUBBLES OF DIVISION</div>
+        <div class="dramatic-sub">Fifth Place</div>
+        <div class="band-name" style="color:#d070a0;">Megadeth</div>
+        <div class="song-name">&ldquo;I Am War&rdquo;</div>
+        <div class="glam-divider">&#10047; &#9733; &#10047;</div>
+        <div class="points-display" style="color:#d070a0;" data-points="49">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-eliminated">Eliminated</div>
+        <div class="commentary">The paradox of Andra Chansen: TWO champions &mdash; Wickman and Fezzer &mdash; poured 10-point champagne for Megadeth, yet it wasn&rsquo;t enough. 49 points, just ONE point behind the tied pair above. War was declared, but the glam jury demanded glamour, not grenades. So close, yet a world of glitter away.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champions (10p)</div>
+                <div class="voter-names champion">Wickman, Fezzer</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names" style="color:#504050;">None</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 5: #4 — Bad Intentions (HEARTBREAK) -->
+<div class="slide" id="slide-5" data-intensity="6">
+    <div class="result-card heartbreak">
+        <div class="dramatic-headline">SO CLOSE, SO CRUEL</div>
+        <div class="dramatic-sub">Fourth Place</div>
+        <div class="band-name">Bad Intentions</div>
+        <div class="song-name">&ldquo;One Way Road&rdquo;</div>
+        <div class="glam-divider">&#10047; &#9733; &#10047;</div>
+        <div class="points-display" data-points="50">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-eliminated">Eliminated</div>
+        <div class="heartbreak-note">Tied at 50 &mdash; lost on tiebreaker</div>
+        <div class="commentary">Fredda stood alone as champion, pouring 10 glittering points into the glass. Not a single hater &mdash; universal respect, but not enough love. 50 points tied with the Hellacopters, and Bad Intentions lost the tiebreaker on 8-point votes (2 vs 4). A one-way road that led to a dead end. The cruelest bubble to watch pop.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champion (10p)</div>
+                <div class="voter-names champion" style="color:#ff69b4; text-shadow:0 0 8px rgba(255,105,180,0.5);">Fredda</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names" style="color:#504050;">None</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 6: #3 — Hellacopters (HEARTBREAK) -->
+<div class="slide" id="slide-6" data-intensity="7">
+    <div class="result-card heartbreak">
+        <div class="dramatic-headline">THE ETERNAL THIRD</div>
+        <div class="dramatic-sub">Third Place</div>
+        <div class="band-name">Hellacopters</div>
+        <div class="song-name">&ldquo;Don&rsquo;t Let Me Bring You Down&rdquo;</div>
+        <div class="glam-divider">&#10047; &#9733; &#10047;</div>
+        <div class="points-display" data-points="50">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-eliminated">Eliminated</div>
+        <div class="heartbreak-note">3rd in Heat 4 &mdash; 3rd again. Always the bridesmaid.</div>
+        <div class="commentary">Third place in Heat 4. Third place in Andra Chansen. The Hellacopters are cursed to forever hover just outside the spotlight. Kalle championed them with 10 points, and FOUR voters gave 8 &mdash; winning the tiebreaker over Bad Intentions. But winning a tiebreaker for 3rd place in Andra Chansen is like being the best-dressed person at a funeral. Peppe and Anders dealt the 1-point blows. Don&rsquo;t let it bring you down? Too late.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champion (10p)</div>
+                <div class="voter-names champion">Kalle</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voters (1p)</div>
+                <div class="voter-names hater">Peppe, Anders</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 7: #2 — Havamal -->
+<div class="slide" id="slide-7" data-intensity="8">
+    <div class="result-card">
+        <div class="dramatic-headline" style="color:#ff69b4;">RISING BUBBLES</div>
+        <div class="dramatic-sub">Second Place</div>
+        <div class="band-name" style="color:#ff85c0;">Havamal</div>
+        <div class="song-name">&ldquo;The Shaman&rdquo;</div>
+        <div class="glam-divider">&#10047; &#9733; &#10047;</div>
+        <div class="points-display" style="color:#ff69b4;" data-points="51">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-final">Direct to Final</div>
+        <div class="commentary">The shamans summoned their magic when it mattered most. Stockholmsjuryn and Anders poured their 10-point champagne, while Fezzer tried to deflate the dream with a lonely 1 point. But the bubbles kept rising &mdash; 51 points lifts Havamal to the Final. Ancient Norse wisdom meets modern glam. The shaman dances on.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champions (10p)</div>
+                <div class="voter-names champion" style="color:#ff69b4; text-shadow:0 0 8px rgba(255,105,180,0.5);">Stockholmsjuryn, Anders</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names hater">Fezzer</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 8: #1 — The Haunted (Winner) -->
+<div class="slide" id="slide-8" data-intensity="9">
+    <div class="result-card winner">
+        <div class="dramatic-headline">REBORN IN GLAM</div>
+        <div class="dramatic-sub" style="color:#c9a84c; letter-spacing:0.6em;">Andra Chansen Champion</div>
+        <div class="band-name">The Haunted</div>
+        <div class="song-name">&ldquo;In Fire Reborn&rdquo;</div>
+        <div class="glam-divider">&#10047; &#9733; &#10047; &#9733; &#10047;</div>
+        <div class="points-display" data-points="52">0</div>
+        <div class="points-label">Total Points</div>
+        <div class="destination dest-final">Andra Chansen Winner &bull; Direct to Final</div>
+        <div class="commentary">THREE champions &mdash; Tompa, Peppe, and Ola &mdash; the most 10-point votes of any song in Andra Chansen. &ldquo;In Fire Reborn&rdquo; was prophetic: The Haunted rose from the ashes and set this stage ablaze. 52 glittering points, only one more than Havamal, but that extra sparkle made all the difference. Only Stockholmsjuryn dared resist with 1 point. The Haunted are REBORN &mdash; and the Final awaits. Pop the champagne.</div>
+        <div class="voter-info">
+            <div class="voter-group">
+                <div class="voter-label">Champions (10p)</div>
+                <div class="voter-names champion">Tompa, Peppe, Ola</div>
+            </div>
+            <div class="voter-group">
+                <div class="voter-label">Bottom Voter (1p)</div>
+                <div class="voter-names hater">Stockholmsjuryn</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 9: Summary -->
+<div class="slide" id="slide-9" data-intensity="5">
+    <div class="result-card">
+        <div class="summary-heading">Andra Chansen &mdash; Final Standings</div>
+        <table class="summary-table">
+            <tr><th>#</th><th>Song</th><th>Pts</th><th>10p</th><th>Destination</th></tr>
+            <tr class="final-row"><td>1</td><td>In Fire Reborn / The Haunted</td><td>52</td><td>3</td><td>FINAL</td></tr>
+            <tr class="final-row"><td>2</td><td>The Shaman / Havamal</td><td>51</td><td>2</td><td>FINAL</td></tr>
+            <tr class="elim-row"><td>3</td><td>Don't Let Me Bring You Down / Hellacopters</td><td>50</td><td>1</td><td>Eliminated</td></tr>
+            <tr class="elim-row"><td>4</td><td>One Way Road / Bad Intentions</td><td>50</td><td>1</td><td>Eliminated</td></tr>
+            <tr class="elim-row"><td>5</td><td>I Am War / Megadeth</td><td>49</td><td>2</td><td>Eliminated</td></tr>
+            <tr class="elim-row"><td>6</td><td>Of the Battles / Venemous</td><td>37</td><td>0</td><td>Eliminated</td></tr>
+            <tr class="elim-row"><td>7</td><td>I'm A Diamond / Lord of the Lost</td><td>34</td><td>0</td><td>Eliminated</td></tr>
+            <tr class="elim-row"><td>8</td><td>Supersonik Speedway / Atomik Train</td><td>28</td><td>0</td><td>Eliminated</td></tr>
+        </table>
+        <div class="commentary" style="margin-top:1.5rem;">
+            The Haunted rose from the ashes with three champions and 52 points to claim Andra Chansen.
+            Havamal&rsquo;s shamanic power secured the second Final ticket with 51 points.
+            The Hellacopters&rsquo; eternal 3rd-place curse continued &mdash; 3rd in Heat 4, 3rd again here.
+            Just 4 points separated 2nd through 5th &mdash; the tightest race in Mello 2026.
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14/dist/TextPlugin.min.js"></script>
+<script>
+    gsap.registerPlugin(TextPlugin);
+
+    var totalSlides = 10;
+    var currentSlide = 0;
+    var activeTimeline = null;
+    var glowTween = null;
+    var GLAM_CHARS = '\u2726\u2727\u2666\u25C7\u2756\u2736\u2734\u2739\u273B\u273A\u2742\u273F\u2740\u2741';
+
+    // ═══ SPLIT TEXT ═══
+    function splitChars(el) {
+        var text = el.textContent;
+        if (!el.dataset.originalText) el.dataset.originalText = text;
+        el.innerHTML = '';
+        for (var i = 0; i < text.length; i++) {
+            var span = document.createElement('span');
+            span.className = 'char';
+            span.textContent = text[i] === ' ' ? '\u00A0' : text[i];
+            el.appendChild(span);
+        }
+        return el.querySelectorAll('.char');
+    }
+
+    function restoreText(el) {
+        if (el && el.dataset.originalText) el.textContent = el.dataset.originalText;
+    }
+
+    // ═══ BUBBLES ═══
+    function createBubbles() {
+        for (var i = 0; i < 45; i++) {
+            var b = document.createElement('div');
+            b.className = 'bubble';
+            var size = (8 + Math.random() * 45) + 'px';
+            b.style.width = size;
+            b.style.height = size;
+            b.style.left = Math.random() * 100 + '%';
+            b.style.animationDuration = (15 + Math.random() * 25) + 's';
+            b.style.animationDelay = Math.random() * 25 + 's';
+            b.style.setProperty('--wobble', ((Math.random() - 0.5) * 80) + 'px');
+            b.style.setProperty('--bubble-opacity', 0.1 + Math.random() * 0.3);
+            if (Math.random() < 0.3) {
+                b.style.borderColor = 'rgba(255, 105, 180, 0.25)';
+                b.style.background = 'radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), rgba(255, 105, 180, 0.08) 50%, transparent 70%)';
+            } else if (Math.random() < 0.2) {
+                b.style.borderColor = 'rgba(255, 215, 0, 0.15)';
+                b.style.background = 'radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), rgba(255, 215, 0, 0.05) 50%, transparent 70%)';
+            }
+            document.body.appendChild(b);
+        }
+    }
+
+    // ═══ SPARKLE FIELD ═══
+    function createSparkles() {
+        for (var i = 0; i < 35; i++) {
+            var s = document.createElement('div');
+            s.className = 'sparkle';
+            var size = (3 + Math.random() * 6) + 'px';
+            s.style.width = size;
+            s.style.height = size;
+            s.style.left = Math.random() * 100 + '%';
+            s.style.top = Math.random() * 100 + '%';
+            s.style.animationDuration = (2 + Math.random() * 4) + 's';
+            s.style.animationDelay = (Math.random() * 5) + 's';
+            if (Math.random() < 0.3) {
+                var beforeAfter = document.createElement('style');
+                beforeAfter.textContent = '#sparkle-' + i + '::before, #sparkle-' + i + '::after { background: rgba(255, 215, 0, 0.7) !important; }';
+                document.head.appendChild(beforeAfter);
+                s.id = 'sparkle-' + i;
+            }
+            document.body.appendChild(s);
+        }
+    }
+
+    // ═══ PARTICLE BURST (glam bubbles) ═══
+    function particleBurst(count, color, cx, cy) {
+        for (var i = 0; i < count; i++) {
+            var p = document.createElement('div');
+            var size = 3 + Math.random() * 8;
+            var isBubble = Math.random() < 0.4;
+            Object.assign(p.style, {
+                position: 'fixed', width: size + 'px', height: size + 'px',
+                background: isBubble
+                    ? 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), ' + color + ' 60%, transparent)'
+                    : color,
+                borderRadius: '50%',
+                left: cx + 'px', top: cy + 'px',
+                zIndex: '150', pointerEvents: 'none',
+                boxShadow: '0 0 ' + (size * 2) + 'px ' + color,
+                border: isBubble ? '1px solid rgba(255,255,255,0.2)' : 'none'
+            });
+            document.body.appendChild(p);
+            var angle = (Math.PI * 2 / count) * i + (Math.random() - 0.5) * 0.8;
+            var dist = 60 + Math.random() * 200;
+            gsap.to(p, {
+                x: Math.cos(angle) * dist,
+                y: Math.sin(angle) * dist - Math.random() * 60,
+                opacity: 0, scale: 0,
+                duration: 0.8 + Math.random() * 1.0,
+                ease: 'power2.out',
+                onComplete: function() { this.targets()[0].remove(); }
+            });
+        }
+    }
+
+    // ═══ CHAMPAGNE CASCADE ═══
+    function champagneCascade() {
+        var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+        for (var i = 0; i < 70; i++) {
+            var p = document.createElement('div');
+            var size = 3 + Math.random() * 10;
+            var isGold = Math.random() < 0.5;
+            var hue = isGold ? (40 + Math.random() * 20) : (330 + Math.random() * 30);
+            var isBubble = Math.random() < 0.3;
+            Object.assign(p.style, {
+                position: 'fixed', width: size + 'px', height: size + 'px',
+                background: isBubble
+                    ? 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent)'
+                    : 'hsl(' + hue + ',100%,' + (60 + Math.random() * 30) + '%)',
+                borderRadius: '50%', left: cx + 'px', top: cy + 'px',
+                zIndex: '150', pointerEvents: 'none',
+                border: isBubble ? '1px solid rgba(255,182,193,0.4)' : 'none',
+                boxShadow: '0 0 ' + (size * 3) + 'px ' + (isGold ? 'rgba(255,215,0,0.7)' : 'rgba(255,105,180,0.5)')
+            });
+            document.body.appendChild(p);
+            gsap.to(p, {
+                x: (Math.random() - 0.5) * window.innerWidth,
+                y: (Math.random() - 0.5) * window.innerHeight,
+                rotation: gsap.utils.random(-360, 360),
+                opacity: 0, scale: 0,
+                duration: 1.5 + Math.random() * 2,
+                delay: Math.random() * 0.5,
+                ease: 'power2.out',
+                onComplete: function() { this.targets()[0].remove(); }
+            });
+        }
+    }
+
+    // ═══ HEARTBREAK TEARS (pink bubble tears) ═══
+    function heartbreakTears() {
+        for (var i = 0; i < 40; i++) {
+            var p = document.createElement('div');
+            var size = 4 + Math.random() * 8;
+            Object.assign(p.style, {
+                position: 'fixed', width: size + 'px', height: (size * 1.3) + 'px',
+                background: 'radial-gradient(circle at 40% 30%, rgba(255,255,255,0.2), rgba(255,20,147,0.4))',
+                borderRadius: '50%',
+                left: (Math.random() * window.innerWidth) + 'px',
+                top: '-20px',
+                zIndex: '150', pointerEvents: 'none',
+                border: '1px solid rgba(255,105,180,0.3)',
+                boxShadow: '0 0 ' + (size * 2) + 'px rgba(255,20,147,0.4)'
+            });
+            document.body.appendChild(p);
+            gsap.to(p, {
+                y: window.innerHeight + 40,
+                x: (Math.random() - 0.5) * 100,
+                opacity: 0,
+                duration: 2 + Math.random() * 3,
+                delay: Math.random() * 2,
+                ease: 'power1.in',
+                onComplete: function() { this.targets()[0].remove(); }
+            });
+        }
+    }
+
+    // ═══ CHAMPAGNE POP — bubbles rising from a point ═══
+    function champagnePop(cx, cy) {
+        for (var i = 0; i < 50; i++) {
+            var p = document.createElement('div');
+            var size = 4 + Math.random() * 14;
+            Object.assign(p.style, {
+                position: 'fixed', width: size + 'px', height: size + 'px',
+                background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), rgba(255,105,180,0.1) 60%, transparent)',
+                borderRadius: '50%',
+                left: cx + 'px', top: cy + 'px',
+                zIndex: '150', pointerEvents: 'none',
+                border: '1px solid rgba(255,182,193,0.3)',
+                boxShadow: '0 0 ' + size + 'px rgba(255,105,180,0.2)'
+            });
+            document.body.appendChild(p);
+            gsap.to(p, {
+                x: (Math.random() - 0.5) * 300,
+                y: -(100 + Math.random() * 400),
+                opacity: 0, scale: 0.3,
+                duration: 1.5 + Math.random() * 2.5,
+                delay: Math.random() * 0.8,
+                ease: 'power1.out',
+                onComplete: function() { this.targets()[0].remove(); }
+            });
+        }
+    }
+
+    // ═══ FIZZ BURST — periodic ambient sparkle ═══
+    function spawnFizz() {
+        var cx = Math.random() * window.innerWidth;
+        var cy = window.innerHeight * (0.5 + Math.random() * 0.5);
+        for (var i = 0; i < 8; i++) {
+            var p = document.createElement('div');
+            var size = 2 + Math.random() * 5;
+            Object.assign(p.style, {
+                position: 'fixed', width: size + 'px', height: size + 'px',
+                background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), rgba(255,182,193,0.2))',
+                borderRadius: '50%',
+                left: cx + 'px', top: cy + 'px',
+                zIndex: '14', pointerEvents: 'none',
+                border: '1px solid rgba(255,255,255,0.15)'
+            });
+            document.body.appendChild(p);
+            gsap.to(p, {
+                x: (Math.random() - 0.5) * 60,
+                y: -(30 + Math.random() * 120),
+                opacity: 0, scale: 0,
+                duration: 1 + Math.random() * 1.5,
+                delay: Math.random() * 0.3,
+                ease: 'power1.out',
+                onComplete: function() { this.targets()[0].remove(); }
+            });
+        }
+    }
+
+    function fizzLoop() {
+        spawnFizz();
+        setTimeout(fizzLoop, 2000 + Math.random() * 5000);
+    }
+
+    // ═══ GLYPH SCRAMBLE ═══
+    function glyphScramble(el, tl, duration, position) {
+        var finalText = el.dataset.originalText || el.textContent;
+        if (!el.dataset.originalText) el.dataset.originalText = finalText;
+        var chars = finalText.split('');
+        el.textContent = chars.map(function(c) {
+            return c === ' ' ? ' ' : GLAM_CHARS[Math.floor(Math.random() * GLAM_CHARS.length)];
+        }).join('');
+        gsap.set(el, { opacity: 1 });
+        var obj = { progress: 0 };
+        tl.to(obj, {
+            progress: 1, duration: duration, ease: 'power1.in',
+            onUpdate: function() {
+                var resolved = Math.floor(obj.progress * chars.length);
+                var display = '';
+                for (var i = 0; i < chars.length; i++) {
+                    if (i < resolved) display += chars[i];
+                    else if (chars[i] === ' ') display += ' ';
+                    else display += GLAM_CHARS[Math.floor(Math.random() * GLAM_CHARS.length)];
+                }
+                el.textContent = display;
+            }
+        }, position);
+    }
+
+    // ═══ SCREEN EFFECTS ═══
+    function flashScreen(intensity) {
+        var el = document.getElementById('flash');
+        var brightness = Math.min(0.15 + intensity * 0.06, 0.8);
+        el.style.background = 'rgba(255,' + Math.min(100 + intensity * 10, 200) + ',' + Math.min(160 + intensity * 10, 220) + ',' + brightness + ')';
+        gsap.fromTo(el, { opacity: 1 }, { opacity: 0, duration: 0.12 + intensity * 0.02, ease: 'power2.out' });
+    }
+
+    function screenShake(intensity) {
+        var mag = Math.min(intensity * 2, 16);
+        var steps = 4 + Math.floor(intensity);
+        var shakeTl = gsap.timeline();
+        for (var i = 0; i < steps; i++) {
+            shakeTl.to(document.body, {
+                x: (Math.random() - 0.5) * mag * 2,
+                y: (Math.random() - 0.5) * mag,
+                duration: 0.04, ease: 'none'
+            });
+        }
+        shakeTl.to(document.body, { x: 0, y: 0, duration: 0.1, ease: 'power2.out' });
+    }
+
+    function impactDistortion(intensity) {
+        var m = 0.005 + intensity * 0.003;
+        gsap.fromTo(document.body,
+            { scaleX: 1 + m, scaleY: 1 - m * 0.5 },
+            { scaleX: 1, scaleY: 1, duration: 0.4, ease: 'elastic.out(1, 0.3)' });
+    }
+
+    // ═══ SLIDE STATE MANAGEMENT ═══
+    function prepareSlideForAnimation(slideEl) {
+        var els = slideEl.querySelectorAll('.dramatic-headline, .dramatic-sub, .band-name, .song-name, .glam-divider, .points-display, .points-label, .commentary, .voter-info, .summary-heading, .summary-table, .heartbreak-note');
+        gsap.set(els, { opacity: 0, clearProps: 'transform,filter,scale' });
+        restoreText(slideEl.querySelector('.dramatic-headline'));
+        restoreText(slideEl.querySelector('.band-name'));
+        restoreText(slideEl.querySelector('.summary-heading'));
+        var commentary = slideEl.querySelector('.commentary');
+        if (commentary && !commentary.dataset.originalText) commentary.dataset.originalText = commentary.textContent;
+        var dest = slideEl.querySelector('.destination');
+        if (dest) gsap.set(dest, { opacity: 0, scale: 0, clearProps: 'boxShadow' });
+        var pd = slideEl.querySelector('.points-display');
+        if (pd) pd.textContent = '0';
+        gsap.set(slideEl.querySelectorAll('.voter-group'), { opacity: 0 });
+        var hn = slideEl.querySelector('.heartbreak-note');
+        if (hn) hn.classList.remove('visible');
+    }
+
+    function resetSlideToFinalState(slideEl) {
+        var els = slideEl.querySelectorAll('.dramatic-headline, .dramatic-sub, .band-name, .song-name, .glam-divider, .points-display, .points-label, .commentary, .voter-info, .summary-heading, .summary-table, .heartbreak-note');
+        gsap.set(els, { opacity: 1, clearProps: 'transform,filter,scale' });
+        restoreText(slideEl.querySelector('.dramatic-headline'));
+        restoreText(slideEl.querySelector('.band-name'));
+        restoreText(slideEl.querySelector('.summary-heading'));
+        var commentary = slideEl.querySelector('.commentary');
+        if (commentary && commentary.dataset.originalText) commentary.textContent = commentary.dataset.originalText;
+        var dest = slideEl.querySelector('.destination');
+        if (dest) gsap.set(dest, { opacity: 1, scale: 1, clearProps: 'boxShadow' });
+        var pd = slideEl.querySelector('.points-display');
+        if (pd) pd.textContent = pd.dataset.points;
+        gsap.set(slideEl.querySelectorAll('.voter-group'), { opacity: 1, clearProps: 'transform' });
+        var hn = slideEl.querySelector('.heartbreak-note');
+        if (hn) hn.classList.add('visible');
+    }
+
+    // ═══ CARD TIMELINE ═══
+    function buildCardTimeline(slideEl, intensity) {
+        var tl = gsap.timeline();
+        var card = slideEl.querySelector('.result-card');
+        if (!card) return tl;
+
+        var headline = card.querySelector('.dramatic-headline');
+        var sub = card.querySelector('.dramatic-sub');
+        var bandName = card.querySelector('.band-name');
+        var songName = card.querySelector('.song-name');
+        var divider = card.querySelector('.glam-divider');
+        var pointsDisplay = card.querySelector('.points-display');
+        var pointsLabel = card.querySelector('.points-label');
+        var destination = card.querySelector('.destination');
+        var commentary = card.querySelector('.commentary');
+        var voterInfo = card.querySelector('.voter-info');
+        var isWinner = card.classList.contains('winner');
+        var isHeartbreak = card.classList.contains('heartbreak');
+        var isFinal = destination ? destination.classList.contains('dest-final') : false;
+
+        // ── HEADLINE ──
+        if (headline) {
+            if (intensity <= 2) {
+                tl.fromTo(headline, { y: 30, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' });
+            } else if (intensity <= 5) {
+                var chars = splitChars(headline);
+                gsap.set(headline, { opacity: 1 });
+                tl.fromTo(chars,
+                    { opacity: 0, y: 50, scale: 0.3, rotation: gsap.utils.random(-25, 25, 1, true) },
+                    { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.5,
+                      stagger: { each: 0.03, from: 'start' }, ease: 'back.out(1.7)' });
+            } else if (intensity <= 7) {
+                var chars = splitChars(headline);
+                gsap.set(headline, { opacity: 1 });
+                tl.fromTo(chars,
+                    { opacity: 0, y: gsap.utils.random(-120, -60, 1, true),
+                      rotation: gsap.utils.random(-40, 40, 1, true), scale: 1.5 },
+                    { opacity: 1, y: 0, rotation: 0, scale: 1, duration: 0.45,
+                      stagger: { each: 0.025, from: 'center' }, ease: 'power4.out' });
+                tl.add(function() {
+                    var r = headline.getBoundingClientRect();
+                    particleBurst(15 + intensity * 2, isHeartbreak ? '#ff1493' : '#ff69b4',
+                        r.left + r.width / 2, r.top + r.height / 2);
+                }, '-=0.1');
+            } else {
+                var chars = splitChars(headline);
+                gsap.set(headline, { opacity: 1 });
+                tl.fromTo(chars,
+                    { opacity: 0, scale: 3, filter: 'blur(8px)',
+                      x: gsap.utils.random(-80, 80, 1, true),
+                      y: gsap.utils.random(-60, 60, 1, true) },
+                    { opacity: 1, scale: 1, filter: 'blur(0px)', x: 0, y: 0, duration: 0.6,
+                      stagger: { each: 0.025, from: 'random' }, ease: 'expo.out' });
+                tl.add(function() { impactDistortion(intensity); }, '-=0.4');
+                tl.add(function() {
+                    var r = headline.getBoundingClientRect();
+                    particleBurst(30 + intensity * 3, isWinner ? '#ffd700' : '#ff69b4',
+                        r.left + r.width / 2, r.top + r.height / 2);
+                }, '-=0.2');
+            }
+        }
+
+        // ── SUB HEADLINE ──
+        if (sub) {
+            tl.fromTo(sub, { opacity: 0, y: 10, letterSpacing: '0.8em' },
+                { opacity: 1, y: 0, letterSpacing: '0.4em', duration: 0.5, ease: 'power2.out' }, '-=0.2');
+        }
+
+        // ── BAND NAME: glyph scramble decode ──
+        if (bandName) {
+            if (!bandName.dataset.originalText) bandName.dataset.originalText = bandName.textContent;
+            if (intensity <= 2) {
+                tl.fromTo(bandName, { opacity: 0, scale: 0.9 },
+                    { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out' }, '-=0.1');
+            } else {
+                var scrambleDur = Math.max(0.6, 1.6 - intensity * 0.1);
+                if (intensity >= 6) {
+                    gsap.set(bandName, { scale: 0.5 });
+                    tl.to(bandName, { scale: 1, duration: scrambleDur * 0.6, ease: 'back.out(1.7)' }, '-=0.1');
+                    glyphScramble(bandName, tl, scrambleDur, '<');
+                } else {
+                    glyphScramble(bandName, tl, scrambleDur, '-=0.1');
+                }
+            }
+        }
+
+        // ── SONG NAME ──
+        if (songName) {
+            tl.fromTo(songName, { opacity: 0, y: 5 },
+                { opacity: 1, y: 0, duration: 0.4, ease: 'power1.out' }, '-=0.3');
+        }
+
+        // ── GLAM DIVIDER ──
+        if (divider) {
+            tl.fromTo(divider, { scaleX: 0, opacity: 0 },
+                { scaleX: 1, opacity: 1, duration: 0.4, ease: 'power2.inOut' }, '-=0.1');
+        }
+
+        // ── POINTS COUNTER ──
+        if (pointsDisplay) {
+            var target = parseInt(pointsDisplay.dataset.points) || 0;
+            var ptObj = { val: 0 };
+            var countDur = Math.max(0.5, 1.4 - intensity * 0.08);
+            tl.fromTo(pointsDisplay, { opacity: 0, scale: 0.5 },
+                { opacity: 1, scale: 1, duration: 0.3, ease: 'power2.out' }, '-=0.1');
+            tl.to(ptObj, {
+                val: target, duration: countDur,
+                snap: { val: 1 }, ease: 'power2.out',
+                onUpdate: function() { pointsDisplay.textContent = Math.round(ptObj.val); }
+            }, '<');
+            if (intensity >= 4) {
+                tl.to(pointsDisplay, {
+                    keyframes: [
+                        { scale: 1.2, duration: 0.1, ease: 'power2.out' },
+                        { scale: 0.95, duration: 0.08, ease: 'power2.in' },
+                        { scale: 1, duration: 0.12, ease: 'power1.out' }
+                    ]
+                });
+            }
+        }
+
+        // ── POINTS LABEL ──
+        if (pointsLabel) {
+            tl.fromTo(pointsLabel, { opacity: 0 }, { opacity: 1, duration: 0.3 }, '-=0.6');
+        }
+
+        // ── DESTINATION ──
+        if (destination) {
+            var destDelay = isFinal ? 1.0 : isHeartbreak ? 0.6 : 0.3;
+
+            if (isFinal && isWinner) {
+                tl.to(destination, {
+                    keyframes: [
+                        { opacity: 1, scale: 2.2, duration: 0.2, ease: 'power4.out' },
+                        { scale: 0.8, duration: 0.1, ease: 'power2.in' },
+                        { scale: 1.2, duration: 0.1, ease: 'power2.out' },
+                        { scale: 0.95, duration: 0.08, ease: 'power2.in' },
+                        { scale: 1, duration: 0.15, ease: 'elastic.out(1, 0.5)' }
+                    ],
+                    delay: destDelay,
+                    onStart: function() {
+                        flashScreen(9); screenShake(9); champagneCascade();
+                        champagnePop(window.innerWidth / 2, window.innerHeight / 2);
+                    },
+                    onComplete: function() {
+                        glowTween = gsap.to(destination, {
+                            boxShadow: '0 0 60px rgba(255,215,0,0.6), 0 0 120px rgba(255,215,0,0.2)',
+                            duration: 1.5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+                        });
+                    }
+                });
+            } else if (isFinal) {
+                tl.to(destination, {
+                    keyframes: [
+                        { opacity: 1, scale: 2.0, duration: 0.2, ease: 'power4.out' },
+                        { scale: 0.75, duration: 0.1, ease: 'power2.in' },
+                        { scale: 1.3, duration: 0.12, ease: 'power3.out' },
+                        { scale: 0.9, duration: 0.08, ease: 'power2.in' },
+                        { scale: 1.05, duration: 0.1, ease: 'power2.out' },
+                        { scale: 1, duration: 0.15, ease: 'elastic.out(1, 0.6)' }
+                    ],
+                    delay: destDelay,
+                    onStart: function() {
+                        flashScreen(8); screenShake(7); impactDistortion(6);
+                        var r = destination.getBoundingClientRect();
+                        particleBurst(40, '#ff69b4', r.left + r.width / 2, r.top + r.height / 2);
+                        champagnePop(r.left + r.width / 2, r.top + r.height / 2);
+                        setTimeout(function() {
+                            particleBurst(25, '#ffd700', r.left + r.width / 2, r.top + r.height / 2);
+                        }, 250);
+                        setTimeout(function() { flashScreen(5); }, 350);
+                    },
+                    onComplete: function() {
+                        glowTween = gsap.to(destination, {
+                            boxShadow: '0 0 50px rgba(255,105,180,0.5), 0 0 100px rgba(255,105,180,0.2)',
+                            duration: 1.5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+                        });
+                    }
+                });
+            } else if (isHeartbreak) {
+                tl.to(destination, {
+                    keyframes: [
+                        { opacity: 1, scale: 2.5, duration: 0.2, ease: 'power4.out' },
+                        { scale: 0.6, duration: 0.12, ease: 'power3.in' },
+                        { scale: 1.3, duration: 0.1, ease: 'power3.out' },
+                        { scale: 0.9, duration: 0.08, ease: 'power2.in' },
+                        { scale: 1, duration: 0.2, ease: 'elastic.out(1, 0.5)' }
+                    ],
+                    delay: 0.6,
+                    onStart: function() {
+                        flashScreen(7); screenShake(6); impactDistortion(5);
+                        heartbreakTears();
+                        var r = destination.getBoundingClientRect();
+                        particleBurst(20, '#ff1493', r.left + r.width / 2, r.top + r.height / 2);
+                    }
+                });
+                var heartbreakNote = card.querySelector('.heartbreak-note');
+                if (heartbreakNote) {
+                    tl.fromTo(heartbreakNote, { opacity: 0, y: 15 },
+                        { opacity: 1, y: 0, duration: 0.8, ease: 'power1.out',
+                          onComplete: function() { heartbreakNote.classList.add('visible'); }
+                        }, '+=0.3');
+                }
+            } else {
+                tl.to(destination, {
+                    keyframes: [
+                        { opacity: 1, scale: 1.8, duration: 0.15, ease: 'power4.out' },
+                        { scale: 0.7, duration: 0.1, ease: 'power2.in' },
+                        { scale: 1.15, rotation: -1.5, duration: 0.1, ease: 'power2.out' },
+                        { scale: 0.95, rotation: 1, duration: 0.08, ease: 'power2.in' },
+                        { scale: 1, rotation: 0, duration: 0.15, ease: 'elastic.out(1, 0.5)' }
+                    ],
+                    delay: destDelay,
+                    onStart: function() {
+                        flashScreen(Math.max(intensity, 3));
+                        screenShake(Math.max(intensity, 2));
+                        var r = destination.getBoundingClientRect();
+                        particleBurst(12 + intensity * 2, '#a08090', r.left + r.width / 2, r.top + r.height / 2);
+                    }
+                });
+            }
+        }
+
+        // ── COMMENTARY ──
+        if (commentary) {
+            if ((intensity >= 8 && (isWinner || isFinal)) || isHeartbreak) {
+                var fullText = commentary.dataset.originalText || commentary.textContent;
+                if (!commentary.dataset.originalText) commentary.dataset.originalText = fullText;
+                commentary.textContent = '';
+                tl.set(commentary, { opacity: 1 }, '+=0.8');
+                tl.to(commentary, {
+                    duration: Math.min(fullText.length * 0.018, 6),
+                    text: { value: fullText, delimiter: '' },
+                    ease: 'none'
+                });
+            } else {
+                tl.fromTo(commentary, { opacity: 0, y: 15 },
+                    { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }, '+=0.6');
+            }
+        }
+
+        // ── VOTER INFO ──
+        if (voterInfo) {
+            var groups = voterInfo.querySelectorAll('.voter-group');
+            tl.fromTo(groups, { opacity: 0, y: 15 },
+                { opacity: 1, y: 0, duration: 0.4, stagger: 0.2, ease: 'power2.out' }, '-=0.2');
+        }
+
+        return tl;
+    }
+
+    // ═══ SUMMARY TIMELINE ═══
+    function buildSummaryTimeline(slideEl) {
+        var tl = gsap.timeline();
+        var heading = slideEl.querySelector('.summary-heading');
+        var table = slideEl.querySelector('.summary-table');
+        var commentary = slideEl.querySelector('.commentary');
+
+        if (heading) {
+            var chars = splitChars(heading);
+            gsap.set(heading, { opacity: 1 });
+            tl.fromTo(chars,
+                { opacity: 0, y: -20, scale: 0.5 },
+                { opacity: 1, y: 0, scale: 1, duration: 0.4,
+                  stagger: { each: 0.02, from: 'start' }, ease: 'back.out(1.5)' });
+        }
+
+        if (table) {
+            gsap.set(table, { opacity: 1 });
+            var headerCells = table.querySelectorAll('th');
+            var dataRows = table.querySelectorAll('tr:not(:first-child)');
+            tl.fromTo(headerCells, { opacity: 0, y: -10 },
+                { opacity: 1, y: 0, duration: 0.3, stagger: 0.04, ease: 'power2.out' }, '-=0.1');
+            tl.fromTo(dataRows, { opacity: 0, x: -40, scale: 0.97 },
+                { opacity: 1, x: 0, scale: 1, duration: 0.35,
+                  stagger: { each: 0.09, from: 'start' }, ease: 'back.out(1.2)' }, '-=0.1');
+        }
+
+        if (commentary) {
+            tl.fromTo(commentary, { opacity: 0 }, { opacity: 1, duration: 0.5 }, '-=0.1');
+        }
+        return tl;
+    }
+
+    // ═══ NAVIGATION ═══
+    function nextSlide() {
+        if (currentSlide >= totalSlides - 1) return;
+        if (activeTimeline) { activeTimeline.kill(); activeTimeline = null; }
+        if (glowTween) { glowTween.kill(); glowTween = null; }
+
+        var current = document.getElementById('slide-' + currentSlide);
+        gsap.to(current, { opacity: 0, duration: 0.4,
+            onComplete: function() { current.classList.remove('active'); } });
+
+        currentSlide++;
+        var next = document.getElementById('slide-' + currentSlide);
+        var intensity = parseInt(next.dataset.intensity) || 1;
+
+        flashScreen(intensity);
+        if (intensity >= 3) screenShake(intensity);
+        if (intensity >= 5) impactDistortion(intensity);
+
+        if (intensity >= 9) {
+            setTimeout(function() { flashScreen(8); }, 200);
+            setTimeout(function() {
+                var el = document.getElementById('flash');
+                el.style.background = 'rgba(255,215,0,0.5)';
+                gsap.fromTo(el, { opacity: 1 }, { opacity: 0, duration: 0.5, ease: 'power2.out' });
+            }, 500);
+            setTimeout(function() { flashScreen(6); }, 800);
+        } else if (intensity >= 8) {
+            setTimeout(function() { flashScreen(6); }, 250);
+            setTimeout(function() {
+                var el = document.getElementById('flash');
+                el.style.background = 'rgba(255,105,180,0.4)';
+                gsap.fromTo(el, { opacity: 1 }, { opacity: 0, duration: 0.4, ease: 'power2.out' });
+            }, 500);
+        }
+
+        prepareSlideForAnimation(next);
+        next.classList.add('active');
+        gsap.fromTo(next, { opacity: 0 }, { opacity: 1, duration: 0.5 });
+
+        var isSummary = next.querySelector('.summary-table');
+        activeTimeline = isSummary ? buildSummaryTimeline(next) : buildCardTimeline(next, intensity);
+        updateProgress();
+    }
+
+    function prevSlide() {
+        if (currentSlide <= 0) return;
+        if (activeTimeline) { activeTimeline.kill(); activeTimeline = null; }
+        if (glowTween) { glowTween.kill(); glowTween = null; }
+
+        var current = document.getElementById('slide-' + currentSlide);
+        gsap.to(current, { opacity: 0, duration: 0.3 });
+        current.classList.remove('active');
+        restoreText(current.querySelector('.dramatic-headline'));
+        restoreText(current.querySelector('.band-name'));
+        var dest = current.querySelector('.destination');
+        if (dest) gsap.set(dest, { opacity: 0, scale: 0, clearProps: 'boxShadow' });
+
+        currentSlide--;
+        var prev = document.getElementById('slide-' + currentSlide);
+        resetSlideToFinalState(prev);
+        prev.classList.add('active');
+        gsap.to(prev, { opacity: 1, duration: 0.3 });
+        updateProgress();
+    }
+
+    function updateProgress() {
+        document.getElementById('progress').style.width =
+            (currentSlide / (totalSlides - 1)) * 100 + '%';
+    }
+
+    // ═══ EVENT LISTENERS ═══
+    document.addEventListener('click', nextSlide);
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'Backspace') {
+            e.preventDefault(); prevSlide();
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault(); nextSlide();
+        }
+    });
+
+    // ═══ INIT ═══
+    createBubbles();
+    createSparkles();
+    setTimeout(fizzLoop, 1000 + Math.random() * 2000);
+    updateProgress();
+
+    (function() {
+        var s0 = document.getElementById('slide-0');
+        var titleMain = s0.querySelector('.title-main');
+        var titleSub = s0.querySelector('.title-sub');
+        var titleHeat = s0.querySelector('.title-heat');
+        var titleGlyphs = s0.querySelector('.title-glyphs');
+        gsap.set([titleMain, titleSub, titleHeat, titleGlyphs], { opacity: 0 });
+
+        var tl = gsap.timeline({ delay: 0.3 });
+
+        var chars = splitChars(titleMain);
+        gsap.set(titleMain, { opacity: 1 });
+        tl.fromTo(chars,
+            { opacity: 0,
+              y: gsap.utils.random(-120, 120, 1, true),
+              x: gsap.utils.random(-60, 60, 1, true),
+              rotation: gsap.utils.random(-45, 45, 1, true),
+              scale: 0 },
+            { opacity: 1, y: 0, x: 0, rotation: 0, scale: 1,
+              duration: 0.8, stagger: { each: 0.05, from: 'random' }, ease: 'back.out(1.5)' });
+
+        tl.fromTo(titleSub, { opacity: 0, filter: 'blur(12px)' },
+            { opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'power2.out' }, '-=0.3');
+
+        tl.fromTo(titleHeat, { opacity: 0, y: 40, scale: 0.8 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'back.out(1.7)' }, '-=0.2');
+
+        if (titleGlyphs) {
+            var glyphText = titleGlyphs.textContent.trim().split(/\s+/);
+            titleGlyphs.textContent = '';
+            glyphText.forEach(function(g) {
+                var span = document.createElement('span');
+                span.className = 'char';
+                span.textContent = g;
+                span.style.marginRight = '0.5em';
+                titleGlyphs.appendChild(span);
+            });
+            var glyphSpans = titleGlyphs.querySelectorAll('.char');
+            gsap.set(titleGlyphs, { opacity: 1 });
+            tl.fromTo(glyphSpans,
+                { opacity: 0, scale: 0, rotation: -180 },
+                { opacity: 0.5, scale: 1, rotation: 0, duration: 0.5,
+                  stagger: { each: 0.08, from: 'center' }, ease: 'back.out(2.5)' }, '-=0.2');
+        }
+    })();
+</script>
+
+</body>
+</html>
